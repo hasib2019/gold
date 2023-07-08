@@ -17,9 +17,9 @@ return new class extends Migration
             $table->increments(`id`);
             $table->date(`buy_date`);
             $table->string(`gold_karat`);
-            $table->float(`weight`);
-            $table->float(`price`);
-            $table->float(`total_price`);
+            $table->float(`weight`, 8, 2);
+            $table->float(`price`, 8, 2);
+            $table->float(`total_price`, 8, 2);
             $table->string(`voucher_no`);
             $table->string(`company_name`);
             $table->timestamps();
