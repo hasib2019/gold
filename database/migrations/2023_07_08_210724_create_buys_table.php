@@ -14,14 +14,14 @@ return new class extends Migration
     public function up()
     {
         Schema::create('buys', function (Blueprint $table) {
-            $table->increments(`id`);
-            $table->date(`buy_date`);
-            $table->string(`gold_karat`);
-            $table->float(`weight`, 8, 2);
-            $table->float(`price`, 8, 2);
-            $table->float(`total_price`, 8, 2);
-            $table->string(`voucher_no`);
-            $table->string(`company_name`);
+            $table->increments('id');
+            $table->date('buy_date');
+            $table->string('gold_karat');
+            $table->float('weight', 8, 2);
+            $table->float('price', 8, 2);
+            $table->float('total_price', 8, 2);
+            $table->string('voucher_no');
+            $table->string('company_name');
             $table->timestamps();
         });
     }
