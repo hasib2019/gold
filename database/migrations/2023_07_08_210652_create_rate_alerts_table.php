@@ -14,13 +14,13 @@ return new class extends Migration
     public function up()
     {
         Schema::create('rate_alerts', function (Blueprint $table) {
-            $table->increments(`id`);
-            $table->integer(`gold`);
-            $table->integer(`weight`);
-            $table->float(`purity`);
-            $table->float(`price`);
-            $table->string(`contact_no`);
-            $table->string(`user_name`);
+            $table->increments('id');
+            $table->integer('gold');
+            $table->integer('weight');
+            $table->float('purity', 8, 2);
+            $table->float('price', 8, 2);
+            $table->string('contact_no');
+            $table->string('user_name');
             $table->timestamps();
         });
     }
