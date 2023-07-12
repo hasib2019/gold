@@ -88,11 +88,11 @@ class GoldFrontEnd extends Controller
     //     dd('work');
     //     return 'work';
     // }
-    public function goldDetails()
+    public function goldPrice()
     {
         $apiKey = "goldapi-49dg4t7rljla2qux-io";
         $symbol = "XAU";
-        $curr = "USD";
+        $curr = "AED";
         $date = "";
 
         $response = Http::withHeaders([

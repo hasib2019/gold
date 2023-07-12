@@ -36,4 +36,4 @@ Route::apiResource('roles', RoleController::class)->except(['create', 'edit'])->
 Route::apiResource('users.roles', UserRoleController::class)->except(['create', 'edit', 'show', 'update'])->middleware(['auth:sanctum', 'ability:admin,super-admin']);
 
 // ****************************** Front end without auth api *************************
-Route::get('gold-details', [GoldFrontEnd::class,'goldDetails']);
+Route::get('gold-price', [GoldFrontEnd::class,'goldPrice']); //UAE Dirham price
