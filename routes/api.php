@@ -37,3 +37,5 @@ Route::apiResource('users.roles', UserRoleController::class)->except(['create', 
 
 // ****************************** Front end without auth api *************************
 Route::get('gold-price', [GoldFrontEnd::class,'goldPrice']); //UAE Dirham price
+Route::get('gold-price-status', [GoldFrontEnd::class,'goldStatus']); //UAE Dirham price
+Route::get('gold-price-business-insider', [GoldFrontEnd::class,'goldPriceBI']); //UAE Dirham price

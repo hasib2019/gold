@@ -109,4 +109,35 @@ class GoldFrontEnd extends Controller
             return $data;
         }
     }
+
+    public function goldStatus() {
+        $apiKey = "goldapi-49dg4t7rljla2qux-io";
+
+        $response = Http::withHeaders([
+            'x-access-token' => $apiKey,
+            'Content-Type' => 'application/json',
+        ])->get("https://www.goldapi.io/api/stat");
+
+        if ($response->failed()) {
+            $error = $response->body();
+            return 'Error: ' . $error;
+        } else {
+            $data = $response->json();
+            
+            return $data;
+        }
+    }
+
+    public function goldPriceBI() {
+         $response = Http::get("https://markets.businessinsider.com/ajax/finanzen/api/commodities?urls=gold-price");
+        if ($response->failed()) {
+            $error = $response->body();
+            return 'Error: ' . $error;
+        } else {
+            $data = $response->json();
+            
+            return $data;
+        }
+        
+    }
 }
