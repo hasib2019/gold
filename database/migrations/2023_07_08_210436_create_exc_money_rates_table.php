@@ -17,7 +17,7 @@ return new class extends Migration
             $table->increments('id');
             $table->integer('usd');
             $table->string('exc_money');
-            $table->float('exc_rate', 8, 2);
+            $table->float('exc_rate', 8, 3);
             $table->timestamps();
         });
     }

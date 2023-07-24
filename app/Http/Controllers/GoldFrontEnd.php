@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use App\Models\ExcMoneyRate;
 
 
 class GoldFrontEnd extends Controller
@@ -105,12 +106,13 @@ class GoldFrontEnd extends Controller
             return 'Error: ' . $error;
         } else {
             $data = $response->json();
-            
+
             return $data;
         }
     }
 
-    public function goldStatus() {
+    public function goldStatus()
+    {
         $apiKey = "goldapi-49dg4t7rljla2qux-io";
 
         $response = Http::withHeaders([
@@ -123,21 +125,88 @@ class GoldFrontEnd extends Controller
             return 'Error: ' . $error;
         } else {
             $data = $response->json();
-            
+
             return $data;
         }
     }
 
-    public function goldPriceBI() {
-         $response = Http::get("https://markets.businessinsider.com/ajax/finanzen/api/commodities?urls=gold-price");
+    public function goldPriceBI()
+    {
+        $moneyRate = ExcMoneyRate::where('exc_money', 'AED')->first(['usd', 'exc_money', 'exc_rate']);
+        $response = Http::get("https://markets.businessinsider.com/ajax/finanzen/api/commodities?urls=gold-price");
         if ($response->failed()) {
             $error = $response->body();
             return 'Error: ' . $error;
         } else {
             $data = $response->json();
-            
-            return $data;
+            if (isset($data[0]['Quotes'][0])) {
+                $quoteData = $data[0]['Quotes'][0];
+                $currencyIsoCode = $quoteData['CurrencyIsoCode'];
+                $lastPriceDateTime = $quoteData['LastPriceDateTime'];
+                $changeAbsolute = $quoteData['ChangeAbsolute'];
+                $changePercent = $quoteData['ChangePercent'];
+                $previousClosePrice = $quoteData['PreviousClosePrice'];
+                // calculation:
+                $UsdHighPrice =  $previousClosePrice + $changeAbsolute + $changePercent;
+                $UsdPrice  = $previousClosePrice + $changeAbsolute;
+                $UsdAsk = $UsdPrice + ($changePercent + $changePercent);
+                $UedBid = $UsdAsk - ($changePercent * 4);
+                $p_24k = ($UsdPrice * (24 / 24)) / 31.1035;
+                $p_22k = ($UsdPrice * (22 / 24)) / 31.1035;
+                $p_21k = ($UsdPrice * (21 / 24)) / 31.1035;
+                $p_20k = ($UsdPrice * (20 / 24)) / 31.1035;
+                $p_18k = ($UsdPrice * (18 / 24)) / 31.1035;
+                $p_16k = ($UsdPrice * (16 / 24)) / 31.1035;
+                $p_14k = ($UsdPrice * (14 / 24)) / 31.1035;
+                $p_10k = ($UsdPrice * (10 / 24)) / 31.1035;
+                return [
+                    [
+                        'CurrencyIsoCode' => $currencyIsoCode,
+                        'previousClosePrice' => $previousClosePrice,
+                        'openPrice' => $previousClosePrice,
+                        'lowPrice' => $previousClosePrice,
+                        'highPrice' => $UsdHighPrice,
+                        'openTime' => $lastPriceDateTime,
+                        'price' => $UsdPrice,
+                        'changeAbsolute' => $changeAbsolute,
+                        'changePercent' => $changePercent,
+                        'ask' => $UsdAsk,
+                        'bid' => $UedBid,
+                        'price_gram_24k' => $p_24k,
+                        'price_gram_22k' => $p_22k,
+                        'price_gram_21k' => $p_21k,
+                        'price_gram_20k' => $p_20k,
+                        'price_gram_18k' => $p_18k,
+                        'price_gram_16k' => $p_16k,
+                        'price_gram_14k' => $p_14k,
+                        'price_gram_10k' => $p_10k,
+                    ],
+                    [
+                        'CurrencyIsoCode' => $moneyRate->exc_money,
+                        'previousClosePrice' => $previousClosePrice * $moneyRate->exc_rate,
+                        'openPrice' => $previousClosePrice * $moneyRate->exc_rate,
+                        'lowPrice' => $previousClosePrice * $moneyRate->exc_rate,
+                        'highPrice' => $UsdHighPrice * $moneyRate->exc_rate,
+                        'openTime' => $lastPriceDateTime,
+                        'price' => $UsdPrice * $moneyRate->exc_rate,
+                        'changeAbsolute' => $changeAbsolute * $moneyRate->exc_rate,
+                        'changePercent' => $changePercent * $moneyRate->exc_rate,
+                        'ask' => $UsdAsk * $moneyRate->exc_rate,
+                        'bid' => $UedBid * $moneyRate->exc_rate,
+                        'price_gram_24k' => $p_24k * $moneyRate->exc_rate,
+                        'price_gram_22k' => $p_22k * $moneyRate->exc_rate,
+                        'price_gram_21k' => $p_21k * $moneyRate->exc_rate,
+                        'price_gram_20k' => $p_20k * $moneyRate->exc_rate,
+                        'price_gram_18k' => $p_18k * $moneyRate->exc_rate,
+                        'price_gram_16k' => $p_16k * $moneyRate->exc_rate,
+                        'price_gram_14k' => $p_14k * $moneyRate->exc_rate,
+                        'price_gram_10k' => $p_10k * $moneyRate->exc_rate,
+                    ]
+
+                ];
+            } else {
+                return 'Data not available.';
+            }
         }
-        
     }
 }
