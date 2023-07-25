@@ -159,6 +159,9 @@ class GoldFrontEnd extends Controller
                 $p_16k = ($UsdPrice * (16 / 24)) / 31.1035;
                 $p_14k = ($UsdPrice * (14 / 24)) / 31.1035;
                 $p_10k = ($UsdPrice * (10 / 24)) / 31.1035;
+                $p_TTB = (($UsdPrice * (24 / 24)) / 31.1035)*116.64;
+                $p_KB995 = (($UsdPrice * (22 / 24)) / 31.1035)*1000;
+                $p_KB999 = (($UsdPrice * (24 / 24)) / 31.1035)*1000;
                 return [
                     [
                         'CurrencyIsoCode' => $currencyIsoCode,
@@ -180,6 +183,9 @@ class GoldFrontEnd extends Controller
                         'price_gram_16k' => $p_16k,
                         'price_gram_14k' => $p_14k,
                         'price_gram_10k' => $p_10k,
+                        'TTB' => $p_TTB,
+                        'KB995' => $p_KB995,
+                        'KB999' => $p_KB999,
                     ],
                     [
                         'CurrencyIsoCode' => $moneyRate->exc_money,
@@ -201,6 +207,9 @@ class GoldFrontEnd extends Controller
                         'price_gram_16k' => $p_16k * $moneyRate->exc_rate,
                         'price_gram_14k' => $p_14k * $moneyRate->exc_rate,
                         'price_gram_10k' => $p_10k * $moneyRate->exc_rate,
+                        'TTB' => ($p_24k * $moneyRate->exc_rate)*116.64,
+                        'KB995' => ($p_22k * $moneyRate->exc_rate)*1000,
+                        'KB999' => ($p_24k * $moneyRate->exc_rate)*1000,
                     ]
 
                 ];
