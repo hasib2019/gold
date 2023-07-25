@@ -85,10 +85,6 @@ class GoldFrontEnd extends Controller
         //
     }
 
-    // public function goldDetails()  {
-    //     dd('work');
-    //     return 'work';
-    // }
     public function goldPrice()
     {
         $apiKey = "goldapi-49dg4t7rljla2qux-io";
