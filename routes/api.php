@@ -7,6 +7,7 @@ use App\Http\Controllers\UserRoleController;
 use App\Http\Controllers\GoldFrontEnd;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SettingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,6 +37,7 @@ Route::apiResource('roles', RoleController::class)->except(['create', 'edit'])->
 Route::apiResource('users.roles', UserRoleController::class)->except(['create', 'edit', 'show', 'update'])->middleware(['auth:sanctum', 'ability:admin,super-admin']);
 
 // ****************************** Front end without auth api *************************
-Route::get('gold-price', [GoldFrontEnd::class,'goldPrice']); //UAE Dirham price
-Route::get('gold-price-status', [GoldFrontEnd::class,'goldStatus']); //UAE Dirham price
-Route::get('gold-price-business-insider', [GoldFrontEnd::class,'goldPriceBI']); //UAE Dirham price
+Route::get('gold-price', [GoldFrontEnd::class, 'goldPrice']); //UAE Dirham price
+Route::get('gold-price-status', [GoldFrontEnd::class, 'goldStatus']); //UAE Dirham price
+Route::get('gold-price-business-insider', [GoldFrontEnd::class, 'goldPriceBI']); //UAE Dirham price
+Route::get('site-setting', [SettingController::class, 'index']); //UAE Dirham price

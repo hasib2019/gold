@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Setting;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
 
 class SettingController extends Controller
@@ -14,7 +15,7 @@ class SettingController extends Controller
      */
     public function index()
     {
-        //
+        return Setting::where('id', 1)->first()->toJson();
     }
 
     /**
