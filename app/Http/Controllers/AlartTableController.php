@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\alartTable;
+use App\Models\AlartTable;
+use App\Models\NewsAlart;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Laravel\Sanctum\Exceptions\MissingAbilityException;
 
 class AlartTableController extends Controller
 {
@@ -35,18 +34,34 @@ class AlartTableController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, $insert)
+    public function store(Request $request)
     {
-        dd($insert);
         $creds = $request->validate([
             'gold_weight' => 'required',
-            'app_price' => 'required',
+            'app_price' => 'required|numeric',
+            'offer_price' => 'required|numeric',
+            'Name' => 'required|string',
+            'Mobile_no' => 'required|string',
+            'buy_date' => 'required|date_format:d/m/Y',
+            'status' => 'required|boolean',
         ]);
-        dd($creds);
 
-        $newRecord = 'create';
-        return response()->json(['message' => 'Record created successfully', 'data' => $newRecord], 201);
-        return true;
+        // After validation, you can access the individual fields like this:
+        // Create a new instance of the NewsAlart model
+        $newsAlart = new AlartTable();
+
+        // Set the model's attributes with the validated data
+        $newsAlart->gold_weight = $creds['gold_weight'];
+        $newsAlart->app_price = $creds['app_price'];
+        $newsAlart->offer_price = $creds['offer_price'];
+        $newsAlart->Name = $creds['Name'];
+        $newsAlart->Mobile_no = $creds['Mobile_no'];
+        $newsAlart->buy_date = \Carbon\Carbon::createFromFormat('d/m/Y', $creds['buy_date'])->format('Y-m-d');
+        $newsAlart->status = $creds['status'];
+
+        // Save the model to the database
+        $newsAlart->save();
+        return response()->json(['message' => 'Record created successfully', 'data' => $newsAlart], 201);
     }
 
     /**
