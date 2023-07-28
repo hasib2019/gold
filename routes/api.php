@@ -1,10 +1,12 @@
 <?php
 
+use App\Http\Controllers\AlartTableController;
 use App\Http\Controllers\HydraController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserRoleController;
 use App\Http\Controllers\GoldFrontEnd;
+use App\Http\Controllers\NewsAlartController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SettingController;
@@ -40,4 +42,6 @@ Route::apiResource('users.roles', UserRoleController::class)->except(['create', 
 Route::get('gold-price', [GoldFrontEnd::class, 'goldPrice']); //UAE Dirham price
 Route::get('gold-price-status', [GoldFrontEnd::class, 'goldStatus']); //UAE Dirham price
 Route::get('gold-price-business-insider', [GoldFrontEnd::class, 'goldPriceBI']); //UAE Dirham price
-Route::get('site-setting', [SettingController::class, 'index']); //UAE Dirham price
+Route::get('site-setting', [SettingController::class, 'index']); //app setting
+Route::post('/set-alart/{insert}', [AlartTableController::class, 'store']); //product alart
+Route::get('/news-alart', [NewsAlartController::class, 'index']); //News Alart

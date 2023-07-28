@@ -8,13 +8,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\Exceptions\MissingAbilityException;
 
-class UserController extends Controller {
+class UserController extends Controller
+{
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index() {
+    public function index()
+    {
         return User::all();
     }
 
@@ -24,7 +26,8 @@ class UserController extends Controller {
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         $creds = $request->validate([
             'email' => 'required|email',
             'password' => 'required',
@@ -54,14 +57,15 @@ class UserController extends Controller {
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function login(Request $request) {
+    public function login(Request $request)
+    {
         $creds = $request->validate([
             'email' => 'required|email',
             'password' => 'required',
         ]);
 
         $user = User::where('email', $creds['email'])->first();
-        if (! $user || ! Hash::check($request->password, $user->password)) {
+        if (!$user || !Hash::check($request->password, $user->password)) {
             return response(['error' => 1, 'message' => 'invalid credentials'], 401);
         }
 
@@ -82,7 +86,8 @@ class UserController extends Controller {
      * @param  \App\Models\User  $user
      * @return \App\Models\User  $user
      */
-    public function show(User $user) {
+    public function show(User $user)
+    {
         return $user;
     }
 
@@ -95,7 +100,8 @@ class UserController extends Controller {
      *
      * @throws MissingAbilityException
      */
-    public function update(Request $request, User $user) {
+    public function update(Request $request, User $user)
+    {
         $user->name = $request->name ?? $user->name;
         $user->email = $request->email ?? $user->email;
         $user->password = $request->password ? Hash::make($request->password) : $user->password;
@@ -121,7 +127,8 @@ class UserController extends Controller {
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function destroy(User $user) {
+    public function destroy(User $user)
+    {
         $adminRole = Role::where('slug', 'admin')->first();
         $userRoles = $user->roles;
 
@@ -144,7 +151,8 @@ class UserController extends Controller {
      * @param  Request  $request
      * @return mixed
      */
-    public function me(Request $request) {
+    public function me(Request $request)
+    {
         return $request->user();
     }
 }
