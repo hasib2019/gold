@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('product_id')->constrained()->cascadeOnDelete();
             $table->string('status', 10)->default('pending');
+            $table->date('order_date');
             $table->timestamps();
         });
     }

@@ -7,6 +7,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserRoleController;
 use App\Http\Controllers\GoldFrontEnd;
 use App\Http\Controllers\NewsAlartController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -48,4 +49,7 @@ Route::get('site-setting', [SettingController::class, 'index']); //app setting
 //product alart, show all data for web, show single data for web, app, data update for web status change
 Route::apiResource('set-alart', AlartTableController::class)->except(['create', 'edit', 'update']);
 Route::get('/news-alart', [NewsAlartController::class, 'index']); //News Alart
-Route::get('/product', [ProductController::class, 'index']); //News Alart
+Route::get('product', [ProductController::class, 'index']); //product
+
+// ************************ Order ************************
+Route::post('order', [OrderController::class, 'store'])->middleware(['auth:sanctum', 'ability:user']);
