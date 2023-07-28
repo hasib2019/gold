@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\AlartTable;
-use App\Models\NewsAlart;
 use Illuminate\Http\Request;
 
 class AlartTableController extends Controller
@@ -15,7 +14,8 @@ class AlartTableController extends Controller
      */
     public function index()
     {
-        //
+        $response = AlartTable::where('status', 1)->get();
+        return response()->json($response);
     }
 
     /**
@@ -23,10 +23,10 @@ class AlartTableController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
-        //
-    }
+    // public function create()
+    // {
+    //     //
+    // }
 
     /**
      * Store a newly created resource in storage.
@@ -67,44 +67,69 @@ class AlartTableController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\alartTable  $alartTable
+     * @param  \App\Models\AlartTable  $alartTable
      * @return \Illuminate\Http\Response
      */
-    public function show(alartTable $alartTable)
+    public function show($id)
     {
-        //
+        $resource = AlartTable::find($id);
+
+        if (!$resource) {
+            return response()->json(['message' => 'Rate Alart Record not found'], 404);
+        }
+
+        return response()->json(['data' => $resource], 200);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\alartTable  $alartTable
+     * @param  \App\Models\AlartTable  $alartTable
      * @return \Illuminate\Http\Response
      */
-    public function edit(alartTable $alartTable)
-    {
-        //
-    }
+    // public function edit(AlartTable $alartTable)
+    // {
+    //     dd($alartTable);
+    //     $response = AlartTable::where('id', $alartTable)->get();
+    //     return response()->json($response);
+    // }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\alartTable  $alartTable
+     * @param  \App\Models\AlartTable  $alartTable
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, alartTable $alartTable)
+    public function update(Request $request, $id)
     {
-        //
+        // Find the resource by its ID
+        $resource = AlartTable::find($id);
+
+        if (!$resource) {
+            return response()->json(['message' => 'Resource not found'], 404);
+        }
+
+        // Validate the request data
+        $data = $request->validate([
+            'status' => 'required|boolean',
+        ]);
+
+        // Update the status field
+        $resource->status = $data['status'];
+        $resource->save();
+
+        return response()->json(['message' => 'Status updated successfully', 'data' => $resource], 200);
+    
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\alartTable  $alartTable
+     * @param  \App\Models\AlartTable  $alartTable
      * @return \Illuminate\Http\Response
      */
-    public function destroy(alartTable $alartTable)
+    public function destroy(AlartTable $alartTable)
     {
         //
     }

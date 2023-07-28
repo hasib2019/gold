@@ -43,5 +43,5 @@ Route::get('gold-price', [GoldFrontEnd::class, 'goldPrice']); //UAE Dirham price
 Route::get('gold-price-status', [GoldFrontEnd::class, 'goldStatus']); //UAE Dirham price
 Route::get('gold-price-business-insider', [GoldFrontEnd::class, 'goldPriceBI']); //UAE Dirham price
 Route::get('site-setting', [SettingController::class, 'index']); //app setting
-Route::post('set-alart', [AlartTableController::class, 'store']); //product alart
+Route::apiResource('set-alart', AlartTableController::class)->except(['create', 'edit', 'update']); //product alart
 Route::get('/news-alart', [NewsAlartController::class, 'index']); //News Alart

@@ -15,7 +15,6 @@ class NewsAlartController extends Controller
     public function index()
     {
         $response = NewsAlart::where('status', 1)->get();
-        // dd($response);
         return response()->json($response);
     }
 
