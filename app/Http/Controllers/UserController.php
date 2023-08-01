@@ -36,7 +36,13 @@ class UserController extends Controller
 
         $user = User::where('email', $creds['email'])->first();
         if ($user) {
-            return response(['error' => 1, 'message' => 'user already exists'], 409);
+            return response([
+                'error' => 1,
+                'email'=> "",
+                'name'=> "",
+                'id'=> '',
+                'message' => 'user already exists'
+            ], 409);
         }
 
         $user = User::create([
@@ -48,8 +54,17 @@ class UserController extends Controller
         $defaultRoleSlug = config('hydra.default_user_role_slug', 'user');
         $user->roles()->attach(Role::where('slug', $defaultRoleSlug)->first());
 
-        return $user;
+        return response([
+            'error' => 0,
+            'email'=> $user["email"],
+            'name'=> $user["name"],
+            'id'=> $user["id"],
+            'message' => 'User Create Successfully'
+        ], 201);;
     }
+// saudi- 350000, 40000,45000 1month 21
+// katar- 350000, 40000,45000 1month 21
+// malayshiya: 550000, 4month 21
 
     /**
      * Authenticate an user and dispatch token.
