@@ -143,13 +143,15 @@ class GoldFrontEnd extends Controller
                 $lastPrice = $quoteData['LastPrice'];
                 $changeAbsolute = $quoteData['ChangeAbsolute'];
                 $changePercent = $quoteData['ChangePercent'];
+                $absoluteValueAsk = .90;
+                $absoluteValueBid = .45;
                 
                 // calculation:
                 $UsdPrice  = $previousClosePrice - $changeAbsolute;
-                $UsdLowPrice =  $UsdPrice + ($changePercent*5);
-                $UsdHighPrice =  $previousClosePrice - $changeAbsolute - ($changePercent*2);
-                $UsdAsk = $UsdPrice - $changePercent;
-                $UedBid = $UsdPrice + $changePercent;
+                $UsdLowPrice =  ($UsdPrice + ($changePercent*5)) - 2;
+                $UsdHighPrice =  ($previousClosePrice - $changeAbsolute - ($changePercent*2)) + 2;
+                $UsdAsk = ($UsdPrice - $changePercent) + $absoluteValueAsk;
+                $UedBid = ($UsdPrice + $changePercent) - $absoluteValueBid;
                 $p_24k = ($UsdPrice * (24 / 24)) / 31.1035;
                 $p_22k = ($UsdPrice * (22 / 24)) / 31.1035;
                 $p_21k = ($UsdPrice * (21 / 24)) / 31.1035;
