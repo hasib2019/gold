@@ -52,4 +52,4 @@ Route::get('/news-alart', [NewsAlartController::class, 'index']); //News Alart
 Route::get('product', [ProductController::class, 'index']); //product
 
 // ************************ Order ************************
-Route::post('order', [OrderController::class, 'store'])->middleware(['auth:sanctum', 'ability:user']);
+Route::post('order', [OrderController::class, 'store'])->middleware(['auth:sanctum', 'ability:admin,super-admin,user']);

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Auth;
 class OrderController extends Controller
 {
     /**
@@ -36,24 +36,52 @@ class OrderController extends Controller
     public function store(Request $request)
     {
         // return true;
-        $creds = $request->validate([
-            'user_id' => 'required|numeric',
-            'product_id' => 'required|numeric',
-            'order_date' => 'required',
-        ]);
-
-        // return [$creds['user_id'], $creds['product_id'], $creds['order_date']];
-        // After validation, you can access the individual fields like this:
-        // Create a new instance of the NewsAlart model
-        $newsAlart = new Order();
-
-        // Set the model's attributes with the validated data
-        $newsAlart->user_id = $creds['user_id'];
-        $newsAlart->product_id = $creds['product_id'];
-        $newsAlart->order_date = \Carbon\Carbon::createFromFormat('d/m/Y', $creds['order_date'])->format('Y-m-d');
-        // Save the model to the database
-        $newsAlart->save();
-        return response()->json(['message' => 'Order successfully', 'data' => $newsAlart], 201);
+        try {
+            // Validate the request data
+            $creds = $request->validate([
+                'user_id' => 'required|numeric',
+                'product_id' => 'required|numeric',
+                'order_date' => 'required|date_format:d/m/Y',
+            ]);
+        
+            // Create a new instance of the Order model
+            $newsAlart = new Order();
+        
+            // Set the model's attributes with the validated data
+            $newsAlart->user_id = $creds['user_id'];
+            $newsAlart->product_id = $creds['product_id'];
+            $newsAlart->order_date = \Carbon\Carbon::createFromFormat('d/m/Y', $creds['order_date'])->format('Y-m-d');
+        
+            // Save the model to the database
+            if ($newsAlart->save()) {
+                return response()->json([
+                    'error' => 0,
+                    'message' => 'Order successfully',
+                    'data' => $newsAlart,
+                ], 201);
+            } else {
+                // Database save failed
+                return response([
+                    'error' => 1,
+                    'message' => 'Failed to save order to the database',
+                    'data' => '',
+                ], 500);
+            }
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Validation failed
+            return response([
+                'error' => 1,
+                'message' => 'Validation Error',
+                'data' => $e->errors(), // Return validation error messages
+            ], 422);
+        } catch (\Exception $e) {
+            // Other unexpected errors
+            return response([
+                'error' => 1,
+                'message' => 'An error occurred: ' . $e->getMessage(),
+                'data' => '',
+            ], 500);
+        }
     }
 
     /**

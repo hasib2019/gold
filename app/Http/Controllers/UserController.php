@@ -36,7 +36,13 @@ class UserController extends Controller
 
         $user = User::where('email', $creds['email'])->first();
         if ($user) {
-            return response(['error' => 1, 'message' => 'user already exists'], 409);
+            return response([
+                'error' => 1,
+                'email' => "",
+                'name' => "",
+                'id' => '',
+                'message' => 'user already exists'
+            ], 409);
         }
 
         $user = User::create([
@@ -48,7 +54,13 @@ class UserController extends Controller
         $defaultRoleSlug = config('hydra.default_user_role_slug', 'user');
         $user->roles()->attach(Role::where('slug', $defaultRoleSlug)->first());
 
-        return $user;
+        return response([
+            'error' => 0,
+            'email' => $user["email"],
+            'name' => $user["name"],
+            'id' => $user["id"],
+            'message' => 'User Create Successfully'
+        ], 201);;
     }
 
     /**
@@ -65,8 +77,9 @@ class UserController extends Controller
         ]);
 
         $user = User::where('email', $creds['email'])->first();
+
         if (!$user || !Hash::check($request->password, $user->password)) {
-            return response(['error' => 1, 'message' => 'invalid credentials'], 401);
+            return response(['id' => NULL, 'token' => NULL, 'error' => 1, 'message' => 'invalid credentials'], 401);
         }
 
         if (config('hydra.delete_previous_access_tokens_on_login', false)) {
@@ -76,8 +89,7 @@ class UserController extends Controller
         $roles = $user->roles->pluck('slug')->all();
 
         $plainTextToken = $user->createToken('hydra-api-token', $roles)->plainTextToken;
-
-        return response(['error' => 0, 'id' => $user->id, 'token' => $plainTextToken], 200);
+            return response(['id' => $user->id, 'token' => $plainTextToken, 'error' => 0, 'message' => 'Login Successfully'], 200);
     }
 
     /**

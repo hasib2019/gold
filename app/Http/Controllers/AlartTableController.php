@@ -36,32 +36,60 @@ class AlartTableController extends Controller
      */
     public function store(Request $request)
     {
-        $creds = $request->validate([
-            'gold_weight' => 'required',
-            'app_price' => 'required|numeric',
-            'offer_price' => 'required|numeric',
-            'Name' => 'required|string',
-            'Mobile_no' => 'required|string',
-            'buy_date' => 'required|date_format:d/m/Y',
-            'status' => 'required|boolean',
-        ]);
-
-        // After validation, you can access the individual fields like this:
-        // Create a new instance of the NewsAlart model
-        $newsAlart = new AlartTable();
-
-        // Set the model's attributes with the validated data
-        $newsAlart->gold_weight = $creds['gold_weight'];
-        $newsAlart->app_price = $creds['app_price'];
-        $newsAlart->offer_price = $creds['offer_price'];
-        $newsAlart->Name = $creds['Name'];
-        $newsAlart->Mobile_no = $creds['Mobile_no'];
-        $newsAlart->buy_date = \Carbon\Carbon::createFromFormat('d/m/Y', $creds['buy_date'])->format('Y-m-d');
-        $newsAlart->status = $creds['status'];
-
-        // Save the model to the database
-        $newsAlart->save();
-        return response()->json(['message' => 'Record created successfully', 'data' => $newsAlart], 201);
+        try {
+            // Validate the request data
+            $creds = $request->validate([
+                'gold_weight' => 'required',
+                'app_price' => 'required|numeric',
+                'offer_price' => 'required|numeric',
+                'Name' => 'required|string',
+                'Mobile_no' => 'required|string',
+                'buy_date' => 'required|date_format:d/m/Y',
+                'status' => 'required|boolean',
+            ]);
+        
+            // Create a new instance of the NewsAlart model
+            $newsAlart = new AlartTable();
+        
+            // Set the model's attributes with the validated data
+            $newsAlart->gold_weight = $creds['gold_weight'];
+            $newsAlart->app_price = $creds['app_price'];
+            $newsAlart->offer_price = $creds['offer_price'];
+            $newsAlart->Name = $creds['Name'];
+            $newsAlart->Mobile_no = $creds['Mobile_no'];
+            $newsAlart->buy_date = \Carbon\Carbon::createFromFormat('d/m/Y', $creds['buy_date'])->format('Y-m-d');
+            $newsAlart->status = $creds['status'];
+        
+            // Save the model to the database
+            if ($newsAlart->save()) {
+                return response()->json([
+                    'error' => 0,
+                    'data' => $newsAlart,
+                    'message' => 'Record created successfully',
+                ], 201);
+            } else {
+                // Database save failed
+                return response([
+                    'error' => 1,
+                    'data' => '',
+                    'message' => 'Failed to save data to the database',
+                ], 500);
+            }
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Validation failed
+            return response([
+                'error' => 1,
+                'data' => $e->errors(), // Return validation error messages
+                'message' => 'Validation Error',
+            ], 422);
+        } catch (\Exception $e) {
+            // Other unexpected errors
+            return response([
+                'error' => 1,
+                'data' => '',
+                'message' => 'An error occurred: ' . $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**
@@ -120,7 +148,6 @@ class AlartTableController extends Controller
         $resource->save();
 
         return response()->json(['message' => 'Status updated successfully', 'data' => $resource], 200);
-    
     }
 
     /**
