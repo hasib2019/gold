@@ -189,8 +189,8 @@ class GoldFrontEnd extends Controller
                 $p_14k = ($UsdPrice * (14 / 24)) / 31.1035;
                 $p_10k = ($UsdPrice * (10 / 24)) / 31.1035;
                 $p_TTB = (($UsdPrice * (24 / 24)) / 31.1035) * 116.64;
-                $p_TTB_AED = $UsdPrice * 13.79;
-                $p_24_AED = $p_TTB / 115.03;
+                $p_TTB_AED = $UsdPrice * 13.7639;
+                $p_24_AED = $p_TTB / 116.64;
                 $p_22_AED = $p_24_AED * .92;
                 $p_KB995 = (($UsdPrice * (22 / 24)) / 31.1035)*1000;
                 $p_KB999 = (($UsdPrice * (24 / 24)) / 31.1035)*1000;
