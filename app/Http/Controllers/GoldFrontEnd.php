@@ -144,7 +144,11 @@ class GoldFrontEnd extends Controller
                 $changeAbsolute = $quoteData['ChangeAbsolute'];
                 $changePercent = $quoteData['ChangePercent'];
                 $absoluteValueAsk = .90;
+<<<<<<< Updated upstream
                 $absoluteValueBid = .30;
+=======
+                $absoluteValueBid = .45;
+>>>>>>> Stashed changes
                 
                 // calculation:
                 if ($changeAbsolute > 0) {
@@ -216,7 +220,7 @@ class GoldFrontEnd extends Controller
                         'price_gram_16k' => $p_16k,
                         'price_gram_14k' => $p_14k,
                         'price_gram_10k' => $p_10k,
-                        'TTB' =>   $p_TTB,
+                        'TTB' => $p_TTB,
                         'KB995' => $p_KB995,
                         'KB999' => $p_KB999,
                     ],
@@ -240,7 +244,7 @@ class GoldFrontEnd extends Controller
                         'price_gram_16k' => $p_16k * $moneyRate->exc_rate,
                         'price_gram_14k' => $p_14k * $moneyRate->exc_rate,
                         'price_gram_10k' => $p_10k * $moneyRate->exc_rate,
-                        'TTBAED' => $p_TTB,
+                        'TTBAED' => $p_TTB_AED,
                         'KB995' => $p_KB995 * $moneyRate->exc_rate,
                         'KB999' => $p_KB999 * $moneyRate->exc_rate,
                     ]
