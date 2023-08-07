@@ -144,12 +144,8 @@ class GoldFrontEnd extends Controller
                 $changeAbsolute = $quoteData['ChangeAbsolute'];
                 $changePercent = $quoteData['ChangePercent'];
                 $absoluteValueAsk = .90;
-<<<<<<< Updated upstream
                 $absoluteValueBid = .30;
-=======
-                $absoluteValueBid = .45;
->>>>>>> Stashed changes
-                
+                                
                 // calculation:
                 if ($changeAbsolute > 0) {
                     // Value is positive, so subtract a certain amount
