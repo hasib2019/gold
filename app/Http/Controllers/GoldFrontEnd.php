@@ -166,7 +166,7 @@ class GoldFrontEnd extends Controller
                 } else {
                     $UsdPrice  = $lastPrice;
 					$UsdAsk = $lastPrice;
-					$UsdBid = = $lastPrice;
+					$UsdBid = $lastPrice;
 					$UsdHighPrice = $UsdAsk;
 					$UsdLowPrice = $UsdBid;
                 }
@@ -271,7 +271,7 @@ class GoldFrontEnd extends Controller
                 } else {
                     $UsdPrice  = $lastPrice;
 					$UsdAsk = $lastPrice;
-					$UsdBid = = $lastPrice;
+					$UsdBid = $lastPrice;
 					$UsdHighPrice = $UsdAsk;
 					$UsdLowPrice = $UsdBid;
                 }
