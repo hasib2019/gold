@@ -142,45 +142,33 @@ class GoldFrontEnd extends Controller
                 $data = $response->json();
 
                 $quoteData = $data[0]['Quotes'][0];
+                //Default Value From API
                 $currencyIsoCode = $quoteData['CurrencyIsoCode'];
-                $lastPriceDateTime = $quoteData['LastPriceDateTime'];
-                $previousClosePrice = $quoteData['PreviousClosePrice'];
-                $lastPrice = $quoteData['LastPrice'];
-                $changeAbsolute = $quoteData['ChangeAbsolute'];
-                $changePercent = $quoteData['ChangePercent'];
-
+                $lastPriceDateTime = $quoteData['LastPriceDateTime'];     // 1925.1
+                $previousClosePrice = $quoteData['PreviousClosePrice'];  // 1925.1
+                $lastPrice = $quoteData['LastPrice'];					// 1932.06
+                $changeAbsolute = $quoteData['ChangeAbsolute'];			// 6.96 or -6.96
+                $changePercent = $quoteData['ChangePercent'];			// 0.36 or -0.36
+				               
                 // calculation:
-                if ($changeAbsolute > 0) {
-                    // Value is positive, so subtract a certain amount
-                    $UsdPrice  = $previousClosePrice - $changeAbsolute;
-                } elseif ($changeAbsolute < 0) {
-                    // Value is negative, so add a certain amount
-                    $UsdPrice  = $previousClosePrice + $changeAbsolute;
-                    // $adjustedValue = $originalValue + 5;
+                if ($changeAbsolute > 0 && $changePercent > 0) {
+                    $UsdPrice  = $lastPrice + $changePercent;  // 1932.06 + .36 = 1932.42
+					$UsdAsk = $UsdPrice + ($changePercent*2);  // 1932.42 + (.36*2) = 1932.78
+					$UsdBid = $UsdPrice - ($changePercent*2);  // 1932.42 - (.36*2) = 1931.7
+					$UsdHighPrice = $UsdPrice + ($changePercent*4); // 1932.42 + (.36*4) = 1933.86
+					$UsdLowPrice = $UsdPrice - $changeAbsolute - $changePercent; // 1932.42 - 6.96 - 0.36 = 1925.10
+                } elseif ($changeAbsolute < 0 && $changePercent <0) {
+                    $UsdPrice  = $lastPrice - $changePercent;  // 1930.05 - (-.36) = 1932.42
+					$UsdAsk = $UsdPrice - ($changePercent*2);  // 1930.31 - (-.36*2) = 1932.78
+					$UsdBid = $UsdPrice + ($changePercent*2);  // 1930.31 + (-.36*2) = 1931.7
+					$UsdHighPrice = $UsdPrice - ($changePercent*4); // 1932.42 - (-.36*4) = 1933.86
+					$UsdLowPrice = $UsdPrice + $changeAbsolute + $changePercent; // 1932.42 + (-6.96) + (-0.36) = 1925.10
                 } else {
-                    // Value is zero, no adjustment needed
                     $UsdPrice  = $lastPrice;
-                }
-
-                // calculation:
-                if ($changePercent > 0) {
-                    // Value is positive, so subtract a certain amount
-                    $UsdAsk = ($UsdPrice + $changePercent);
-                    $UedBid = ($UsdPrice - $changePercent);
-                    $UsdHighPrice =  ($previousClosePrice + $changeAbsolute + $changePercent) + 4;
-                    $UsdLowPrice =  ($UsdPrice + ($changePercent * 4)) + 4;
-                } elseif ($changePercent < 0) {
-                    // Value is negative, so add a certain amount
-                    $UsdAsk = ($UsdPrice - $changePercent);
-                    $UedBid = ($UsdPrice + $changePercent);
-                    $UsdHighPrice = ($previousClosePrice - $changeAbsolute - $changePercent) - 4;
-                    $UsdLowPrice =  ($UsdPrice - ($changePercent * 4)) - 4;
-                } else {
-                    // Value is zero, no adjustment needed
-                    $UsdAsk = ($lastPrice + $changePercent);
-                    $UedBid = ($lastPrice - $changePercent);
-                    $UsdHighPrice =  ($previousClosePrice + $changeAbsolute + $changePercent) + 4;
-                    $UsdLowPrice =  ($UsdPrice + ($changePercent * 4)) + 4;
+					$UsdAsk = $lastPrice;
+					$UsdBid = = $lastPrice;
+					$UsdHighPrice = $UsdAsk;
+					$UsdLowPrice = $UsdBid;
                 }
 
                 $p_24k = ($UsdPrice * (24 / 24)) / 31.1035;
@@ -192,11 +180,13 @@ class GoldFrontEnd extends Controller
                 $p_14k = ($UsdPrice * (14 / 24)) / 31.1035;
                 $p_10k = ($UsdPrice * (10 / 24)) / 31.1035;
                 $p_TTB = (($UsdPrice * (24 / 24)) / 31.1035) * 116.64;
+				$p_KB995 = (($UsdPrice * (22 / 24)) / 31.1035) * 1000;
+                $p_KB999 = (($UsdPrice * (22 / 24)) / 31.1035) * 1000;
                 $p_TTB_AED = $UsdPrice * 13.7639;
-                $p_24_AED = $p_TTB_AED / 116.64;
-                $p_22_AED = $p_24_AED * .92;
-                $p_KB995 = (($UsdPrice * (22 / 24)) / 31.1035) * 1000;
-                $p_KB999 = (($UsdPrice * (24 / 24)) / 31.1035) * 1000;
+                $p_24_AED = ($p_TTB_AED / 116.64) + 3.67 ;
+                $p_22_AED = ($p_24_AED * .92) + 3.67;
+                $p_KB995_AED = $p_22_AED * 1000;
+                $p_KB999_AED = $p_24_AED * 1000;
                 return [
                     [
                         'CurrencyIsoCode' => $currencyIsoCode,
@@ -244,8 +234,8 @@ class GoldFrontEnd extends Controller
                         'price_gram_14k' => $p_14k * $moneyRate->exc_rate,
                         'price_gram_10k' => $p_10k * $moneyRate->exc_rate,
                         'TTB' => $p_TTB_AED,
-                        'KB995' => $p_KB995 * $moneyRate->exc_rate,
-                        'KB999' => $p_KB999 * $moneyRate->exc_rate,
+                        'KB995' => $p_KB995_AED,
+                        'KB999' => $p_KB999_AED,
                     ]
 
                 ];
@@ -255,112 +245,103 @@ class GoldFrontEnd extends Controller
             $data = $response->json();
 
             $quoteData = $data[0]['Quotes'][0];
-            $currencyIsoCode = $quoteData['CurrencyIsoCode'];
-            $lastPriceDateTime = $quoteData['LastPriceDateTime'];
-            $previousClosePrice = $quoteData['PreviousClosePrice']+rand(1, 3);
-            $lastPrice = $quoteData['LastPrice']+rand(1, 3);
-            $changeAbsolute = $quoteData['ChangeAbsolute'];
-            $changePercent = $quoteData['ChangePercent'];
+			
+			//Default Value From API
+                $currencyIsoCode = $quoteData['CurrencyIsoCode'];
+                $lastPriceDateTime = $quoteData['LastPriceDateTime'];     // 1925.1
+                $previousClosePrice = $quoteData['PreviousClosePrice'] + rand(0, 1);  // 1925.1
+                $lastPrice = $quoteData['LastPrice'] + rand(0, 1); 					// 1932.06
+                $changeAbsolute = $quoteData['ChangeAbsolute'];			// 6.96 or -6.96
+                $changePercent = $quoteData['ChangePercent'];			// 0.36 or -0.36
+				
+                                
+                // calculation:
+                if ($changeAbsolute > 0 && $changePercent > 0) {
+                    $UsdPrice  = $lastPrice + $changePercent;  // 1932.06 + .36 = 1932.42
+					$UsdAsk = $UsdPrice + ($changePercent*2);  // 1932.42 + (.36*2) = 1932.78
+					$UsdBid = $UsdPrice - ($changePercent*2);  // 1932.42 - (.36*2) = 1931.7
+					$UsdHighPrice = $UsdPrice + ($changePercent*4); // 1932.42 + (.36*4) = 1933.86
+					$UsdLowPrice = $UsdPrice - $changeAbsolute - $changePercent; // 1932.42 - 6.96 - 0.36 = 1925.10
+                } elseif ($changeAbsolute < 0 && $changePercent <0) {
+                    $UsdPrice  = $lastPrice - $changePercent;  // 1930.05 - (-.36) = 1932.42
+					$UsdAsk = $UsdPrice - ($changePercent*2);  // 1930.31 - (-.36*2) = 1932.78
+					$UsdBid = $UsdPrice + ($changePercent*2);  // 1930.31 + (-.36*2) = 1931.7
+					$UsdHighPrice = $UsdPrice - ($changePercent*4); // 1932.42 - (-.36*4) = 1933.86
+					$UsdLowPrice = $UsdPrice + $changeAbsolute + $changePercent; // 1932.42 + (-6.96) + (-0.36) = 1925.10
+                } else {
+                    $UsdPrice  = $lastPrice;
+					$UsdAsk = $lastPrice;
+					$UsdBid = = $lastPrice;
+					$UsdHighPrice = $UsdAsk;
+					$UsdLowPrice = $UsdBid;
+                }
 
-            // calculation:
-            if ($changeAbsolute > 0) {
-                // Value is positive, so subtract a certain amount
-                $UsdPrice  = $previousClosePrice - $changeAbsolute;
-            } elseif ($changeAbsolute < 0) {
-                // Value is negative, so add a certain amount
-                $UsdPrice  = ($previousClosePrice + $changeAbsolute)+rand(1, 3);
-                // $adjustedValue = $originalValue + 5;
-            } else {
-                // Value is zero, no adjustment needed
-                $UsdPrice  = $lastPrice+rand(1, 3);
-            }
-
-            // calculation:
-            if ($changePercent > 0) {
-                // Value is positive, so subtract a certain amount
-                $UsdAsk = ($UsdPrice + $changePercent);
-                $UedBid = ($UsdPrice - $changePercent);
-                $UsdHighPrice =  ($previousClosePrice + $changeAbsolute + $changePercent) + 4;
-                $UsdLowPrice =  ($UsdPrice + ($changePercent * 4)) + 4;
-            } elseif ($changePercent < 0) {
-                // Value is negative, so add a certain amount
-                $UsdAsk = ($UsdPrice - $changePercent);
-                $UedBid = ($UsdPrice + $changePercent);
-                $UsdHighPrice = ($previousClosePrice - $changeAbsolute - $changePercent) - 4;
-                $UsdLowPrice =  ($UsdPrice - ($changePercent * 4)) - 4;
-            } else {
-                // Value is zero, no adjustment needed
-                $UsdAsk = ($lastPrice + $changePercent);
-                $UedBid = ($lastPrice - $changePercent);
-                $UsdHighPrice =  ($previousClosePrice + $changeAbsolute + $changePercent) + 4;
-                $UsdLowPrice =  ($UsdPrice + ($changePercent * 4)) + 4;
-            }
-
-            $p_24k = ($UsdPrice * (24 / 24)) / 31.1035;
-            $p_22k = ($UsdPrice * (22 / 24)) / 31.1035;
-            $p_21k = ($UsdPrice * (21 / 24)) / 31.1035;
-            $p_20k = ($UsdPrice * (20 / 24)) / 31.1035;
-            $p_18k = ($UsdPrice * (18 / 24)) / 31.1035;
-            $p_16k = ($UsdPrice * (16 / 24)) / 31.1035;
-            $p_14k = ($UsdPrice * (14 / 24)) / 31.1035;
-            $p_10k = ($UsdPrice * (10 / 24)) / 31.1035;
-            $p_TTB = (($UsdPrice * (24 / 24)) / 31.1035) * 116.64;
-            $p_TTB_AED = $UsdPrice * 13.7639;
-            $p_24_AED = $p_TTB_AED / 116.64;
-            $p_22_AED = $p_24_AED * .92;
-            $p_KB995 = (($UsdPrice * (22 / 24)) / 31.1035) * 1000;
-            $p_KB999 = (($UsdPrice * (24 / 24)) / 31.1035) * 1000;
+                $p_24k = ($UsdPrice * (24 / 24)) / 31.1035;
+                $p_22k = ($UsdPrice * (22 / 24)) / 31.1035;
+                $p_21k = ($UsdPrice * (21 / 24)) / 31.1035;
+                $p_20k = ($UsdPrice * (20 / 24)) / 31.1035;
+                $p_18k = ($UsdPrice * (18 / 24)) / 31.1035;
+                $p_16k = ($UsdPrice * (16 / 24)) / 31.1035;
+                $p_14k = ($UsdPrice * (14 / 24)) / 31.1035;
+                $p_10k = ($UsdPrice * (10 / 24)) / 31.1035;
+                $p_TTB = (($UsdPrice * (24 / 24)) / 31.1035) * 116.64;
+				$p_KB995 = (($UsdPrice * (22 / 24)) / 31.1035) * 1000;
+                $p_KB999 = (($UsdPrice * (22 / 24)) / 31.1035) * 1000;
+                $p_TTB_AED = $UsdPrice * 13.7639;
+                $p_24_AED = ($p_TTB_AED / 116.64) + 3.67 ;
+                $p_22_AED = ($p_24_AED * .92) + 3.67;
+                $p_KB995_AED = $p_22_AED * 1000;
+                $p_KB999_AED = $p_24_AED * 1000;
             return [
-                [
-                    'CurrencyIsoCode' => $currencyIsoCode,
-                    'openTime' => $lastPriceDateTime,
-                    'previousClosePrice' => $previousClosePrice,
-                    'openPrice' => $previousClosePrice,
-                    'lastPrice' => $lastPrice,
-                    'price' => $UsdPrice,
-                    'ask' => $UsdAsk,
-                    'bid' => $UedBid,
-                    'highPrice' => $UsdHighPrice,
-                    'lowPrice' => $UsdLowPrice,
-                    'changeAbsolute' => $changeAbsolute,
-                    'changePercent' => $changePercent,
-                    'price_gram_24k' => $p_24k,
-                    'price_gram_22k' => $p_22k,
-                    'price_gram_21k' => $p_21k,
-                    'price_gram_20k' => $p_20k,
-                    'price_gram_18k' => $p_18k,
-                    'price_gram_16k' => $p_16k,
-                    'price_gram_14k' => $p_14k,
-                    'price_gram_10k' => $p_10k,
-                    'TTB' => $p_TTB,
-                    'KB995' => $p_KB995,
-                    'KB999' => $p_KB999,
-                ],
-                [
-                    'CurrencyIsoCode' => $moneyRate->exc_money,
-                    'previousClosePrice' => $previousClosePrice * $moneyRate->exc_rate,
-                    'openPrice' => $previousClosePrice * $moneyRate->exc_rate,
-                    'lowPrice' => $previousClosePrice * $moneyRate->exc_rate,
-                    'highPrice' => $UsdHighPrice * $moneyRate->exc_rate,
-                    'openTime' => $lastPriceDateTime,
-                    'price' => $UsdPrice * $moneyRate->exc_rate,
-                    'changeAbsolute' => $changeAbsolute * $moneyRate->exc_rate,
-                    'changePercent' => $changePercent * $moneyRate->exc_rate,
-                    'ask' => $UsdAsk * $moneyRate->exc_rate,
-                    'bid' => $UedBid * $moneyRate->exc_rate,
-                    'price_gram_24k' => $p_24_AED,
-                    'price_gram_22k' => $p_22_AED,
-                    'price_gram_21k' => $p_21k * $moneyRate->exc_rate,
-                    'price_gram_20k' => $p_20k * $moneyRate->exc_rate,
-                    'price_gram_18k' => $p_18k * $moneyRate->exc_rate,
-                    'price_gram_16k' => $p_16k * $moneyRate->exc_rate,
-                    'price_gram_14k' => $p_14k * $moneyRate->exc_rate,
-                    'price_gram_10k' => $p_10k * $moneyRate->exc_rate,
-                    'TTB' => $p_TTB_AED,
-                    'KB995' => $p_KB995 * $moneyRate->exc_rate,
-                    'KB999' => $p_KB999 * $moneyRate->exc_rate,
-                ]
-
+					[
+                        'CurrencyIsoCode' => $currencyIsoCode,
+                        'openTime' => $lastPriceDateTime,
+                        'previousClosePrice' => $previousClosePrice,
+                        'openPrice' => $previousClosePrice,
+                        'lastPrice' => $lastPrice,
+                        'price' => $UsdPrice,
+                        'ask' => $UsdAsk,
+                        'bid' => $UedBid,
+                        'highPrice' => $UsdHighPrice,
+                        'lowPrice' => $UsdLowPrice,
+                        'changeAbsolute' => $changeAbsolute,
+                        'changePercent' => $changePercent,
+                        'price_gram_24k' => $p_24k,
+                        'price_gram_22k' => $p_22k,
+                        'price_gram_21k' => $p_21k,
+                        'price_gram_20k' => $p_20k,
+                        'price_gram_18k' => $p_18k,
+                        'price_gram_16k' => $p_16k,
+                        'price_gram_14k' => $p_14k,
+                        'price_gram_10k' => $p_10k,
+                        'TTB' => $p_TTB,
+                        'KB995' => $p_KB995,
+                        'KB999' => $p_KB999,
+                    ],
+                    [
+                        'CurrencyIsoCode' => $moneyRate->exc_money,
+                        'previousClosePrice' => $previousClosePrice * $moneyRate->exc_rate,
+                        'openPrice' => $previousClosePrice * $moneyRate->exc_rate,
+                        'lowPrice' => $previousClosePrice * $moneyRate->exc_rate,
+                        'highPrice' => $UsdHighPrice * $moneyRate->exc_rate,
+                        'openTime' => $lastPriceDateTime,
+                        'price' => $UsdPrice * $moneyRate->exc_rate,
+                        'changeAbsolute' => $changeAbsolute * $moneyRate->exc_rate,
+                        'changePercent' => $changePercent * $moneyRate->exc_rate,
+                        'ask' => $UsdAsk * $moneyRate->exc_rate,
+                        'bid' => $UedBid * $moneyRate->exc_rate,
+                        'price_gram_24k' => $p_24_AED,
+                        'price_gram_22k' => $p_22_AED,
+                        'price_gram_21k' => $p_21k * $moneyRate->exc_rate,
+                        'price_gram_20k' => $p_20k * $moneyRate->exc_rate,
+                        'price_gram_18k' => $p_18k * $moneyRate->exc_rate,
+                        'price_gram_16k' => $p_16k * $moneyRate->exc_rate,
+                        'price_gram_14k' => $p_14k * $moneyRate->exc_rate,
+                        'price_gram_10k' => $p_10k * $moneyRate->exc_rate,
+                        'TTB' => $p_TTB_AED,
+                        'KB995' => $p_KB995_AED,
+                        'KB999' => $p_KB999_AED,
+                    ]
             ];
         }
     }
