@@ -183,8 +183,8 @@ class GoldFrontEnd extends Controller
 				$p_KB995 = (($UsdPrice * (22 / 24)) / 31.1035) * 1000;
                 $p_KB999 = (($UsdPrice * (22 / 24)) / 31.1035) * 1000;
                 $p_TTB_AED = $UsdPrice * 13.7639;
-                $p_24_AED = ($p_TTB_AED / 116.64) + 3.67 ;
-                $p_22_AED = ($p_24_AED * .92) + 3.67;
+                $p_24_AED = ($p_TTB_AED / 116.64) + 3.67 -1 ;
+                $p_22_AED = ($p_24_AED * .916);
                 $p_KB995_AED = $p_22_AED * 1000;
                 $p_KB999_AED = $p_24_AED * 1000;
                 return [
@@ -288,8 +288,8 @@ class GoldFrontEnd extends Controller
 				$p_KB995 = (($UsdPrice * (22 / 24)) / 31.1035) * 1000;
                 $p_KB999 = (($UsdPrice * (22 / 24)) / 31.1035) * 1000;
                 $p_TTB_AED = $UsdPrice * 13.7639;
-                $p_24_AED = ($p_TTB_AED / 116.64) + 3.67 ;
-                $p_22_AED = ($p_24_AED * .92) + 3.67;
+                $p_24_AED = ($p_TTB_AED / 116.64) + 3.67 -1 ;
+                $p_22_AED = ($p_24_AED * .916);
                 $p_KB995_AED = $p_22_AED * 1000;
                 $p_KB999_AED = $p_24_AED * 1000;
             return [
