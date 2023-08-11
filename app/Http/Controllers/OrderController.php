@@ -6,6 +6,8 @@ use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
+
 class OrderController extends Controller
 {
     /**
@@ -17,7 +19,11 @@ class OrderController extends Controller
     {
         try {
             $userId = Auth::id(); // Get the authenticated user's ID
-            $orderData = Order::where('user_id', $userId)->get();
+            $orderData = DB::table('orders')
+            ->join('products', 'orders.product_id', '=', 'products.id')
+            ->where('orders.user_id', $userId)
+            ->select('orders.*', 'products.*')
+            ->get();
     
             return response()->json(['error' => null, 'data' => $orderData], 200);
         } catch (\Exception $e) {
