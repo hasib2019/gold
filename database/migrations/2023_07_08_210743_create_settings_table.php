@@ -21,7 +21,9 @@ return new class extends Migration
             $table->string('contact_no');
             $table->string('address');
             $table->string('email');
-            $table->string('bank_details');
+            $table->string('bank_name');
+            $table->string('account_no');
+            $table->string('branch_name');
             $table->timestamps();
         });
     }
