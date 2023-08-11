@@ -20,11 +20,11 @@ class OrderController extends Controller
         try {
             $userId = Auth::id(); // Get the authenticated user's ID
             $orderData = DB::table('orders')
-            ->join('products', 'orders.product_id', '=', 'products.id')
-            ->where('orders.user_id', $userId)
-            ->select('orders.*', 'products.*')
-            ->get();
-    
+                ->join('products', 'orders.product_id', '=', 'products.id')
+                ->where('orders.user_id', $userId)
+                ->select('orders.*', 'products.*')
+                ->get();
+
             return response()->json(['error' => null, 'data' => $orderData], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'An error occurred', 'data' => null], 500);
@@ -141,5 +141,23 @@ class OrderController extends Controller
     public function destroy(Order $order)
     {
         //
+    }
+
+    public function goldTrends()
+    {
+        try {
+            $response = [
+                'percent' => 80,
+                'sell_below' => 50000,
+                'profit_around' => 59700,
+                'entry_price' => 57000,
+                'stop_loss' => 56000,
+                'target1' => 53000,
+                'target2' => 54000,
+            ];
+            return response()->json(['error' => null, 'data' => $response], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred', 'data' => null], 500);
+        }
     }
 }
