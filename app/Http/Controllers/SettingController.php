@@ -14,8 +14,30 @@ class SettingController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
-        return Setting::where('id', 1)->first()->toJson();
+    { {
+            $setting = Setting::where('id', 1)->first();
+
+            $response = [
+                'siteSetting' => [
+                    'id' => $setting->id,
+                    'name' => $setting->name,
+                    'full_name' => $setting->full_name,
+                    'about' => $setting->about,
+                    'contact_no' => $setting->contact_no,
+                    'address' => $setting->address,
+                    'email' => $setting->email,
+                    'created_at' => $setting->created_at,
+                    'updated_at' => $setting->updated_at,
+                ],
+                'bankDetails' => [
+                    'bank_name' => $setting->bank_name,
+                    'account_no' => $setting->account_no,
+                    'branch_name' => $setting->branch_name,
+                ],
+            ];
+
+            return response()->json($response);
+        }
     }
 
     /**
