@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Response;
 class OrderController extends Controller
 {
     /**
@@ -14,7 +15,14 @@ class OrderController extends Controller
      */
     public function index()
     {
-        //
+        try {
+            $userId = Auth::id(); // Get the authenticated user's ID
+            $orderData = Order::where('user_id', $userId)->get();
+    
+            return response()->json(['error' => null, 'data' => $orderData], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred', 'data' => null], 500);
+        }
     }
 
     /**
@@ -43,15 +51,15 @@ class OrderController extends Controller
                 'product_id' => 'required|numeric',
                 'order_date' => 'required|date_format:d/m/Y',
             ]);
-        
+
             // Create a new instance of the Order model
             $newsAlart = new Order();
-        
+
             // Set the model's attributes with the validated data
             $newsAlart->user_id = $creds['user_id'];
             $newsAlart->product_id = $creds['product_id'];
             $newsAlart->order_date = \Carbon\Carbon::createFromFormat('d/m/Y', $creds['order_date'])->format('Y-m-d');
-        
+
             // Save the model to the database
             if ($newsAlart->save()) {
                 return response()->json([
