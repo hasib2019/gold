@@ -14,9 +14,9 @@ class SettingController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    { {
+    { 
+        try {
             $setting = Setting::where('id', 1)->first();
-
             $response = [
                 'siteSetting' => [
                     'id' => $setting->id,
@@ -35,9 +35,13 @@ class SettingController extends Controller
                     'branch_name' => $setting->branch_name,
                 ],
             ];
-
-            return response()->json($response);
+            return response()->json(['error' => null, 'data' => $response], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred', 'data' => null], 500);
         }
+
+         
+        
     }
 
     /**
