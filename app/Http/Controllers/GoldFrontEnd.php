@@ -166,9 +166,9 @@ class GoldFrontEnd extends Controller
                 } else {
                     $UsdPrice  = $lastPrice;
 					$UsdAsk = $lastPrice;
-					$UsdBid = $lastPrice;
+					$UsdBid = $lastPrice-1;
 					$UsdHighPrice = $UsdAsk;
-					$UsdLowPrice = $UsdBid;
+					$UsdLowPrice = $UsdAsk;
                 }
 
                 $p_24k = ($UsdPrice * (24 / 24)) / 31.1035;
@@ -271,9 +271,9 @@ class GoldFrontEnd extends Controller
                 } else {
                     $UsdPrice  = $lastPrice;
 					$UsdAsk = $lastPrice;
-					$UsdBid = $lastPrice;
+					$UsdBid = $lastPrice-1;
 					$UsdHighPrice = $UsdAsk;
-					$UsdLowPrice = $UsdBid;
+					$UsdLowPrice = $UsdAsk;
                 }
 
                 $p_24k = ($UsdPrice * (24 / 24)) / 31.1035;
