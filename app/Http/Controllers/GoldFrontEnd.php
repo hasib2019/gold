@@ -249,7 +249,7 @@ class GoldFrontEnd extends Controller
 			//Default Value From API
                 $currencyIsoCode = $quoteData['CurrencyIsoCode'];
                 $lastPriceDateTime = $quoteData['LastPriceDateTime'];     // 1925.1
-                $previousClosePrice = $quoteData['PreviousClosePrice'];   //+ lcg_value() 1925.1
+                $previousClosePrice = $quoteData['PreviousClosePrice'] + lcg_value(); //1925.1
                 $lastPrice = $quoteData['LastPrice'] + lcg_value(); 					// 1932.06 rand(0, 1)
                 $changeAbsolute = $quoteData['ChangeAbsolute'];			// 6.96 or -6.96
                 $changePercent = $quoteData['ChangePercent'];			// 0.36 or -0.36
