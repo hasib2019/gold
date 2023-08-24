@@ -15,11 +15,11 @@ return new class extends Migration
     {
         Schema::create('live_rate_data', function (Blueprint $table) {
             $table->id();
-            $table->string('type', 20);
-            $table->decimal('bid_sell', 10, 2);
-            $table->decimal('ask_buy', 10, 2);
-            $table->decimal('low', 10, 2);
-            $table->decimal('high', 10, 2);
+            $table->string('type', 20)->nullable();
+            $table->decimal('bid_sell', 10, 2)->nullable();
+            $table->decimal('ask_buy', 10, 2)->nullable();
+            $table->decimal('low', 10, 2)->nullable();
+            $table->decimal('high', 10, 2)->nullable();
             $table->timestamps();
         });
     }
