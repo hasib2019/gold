@@ -9,7 +9,7 @@ use App\Models\LiveRateData;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
-
+use Illuminate\Http\Client\RequestException;
 class GoldFrontEnd extends Controller
 {
     /**
@@ -376,11 +376,10 @@ class GoldFrontEnd extends Controller
             }
 
             return $result;
-        } catch (\Exception $e) {
-            // Handle error
-            return [
-                'error' => 'An error occurred while fetching data.',
-            ];
+        } catch (RequestException $e) {
+            // Handle the exception, log the error, and provide a user-friendly message
+            Log::error('Error connecting to the server: ' . $e->getMessage());
+            return response()->json(['error' => 'Could not fetch data from the server'], 500);
         }
     }
 
