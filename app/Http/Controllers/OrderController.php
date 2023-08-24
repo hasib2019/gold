@@ -160,4 +160,5 @@ class OrderController extends Controller
             return response()->json(['error' => 'An error occurred', 'data' => null], 500);
         }
     }
+
 }

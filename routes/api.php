@@ -44,7 +44,13 @@ Route::apiResource('users.roles', UserRoleController::class)->except(['create', 
 Route::get('gold-price', [GoldFrontEnd::class, 'goldPrice']); //UAE Dirham price
 Route::get('gold-price-status', [GoldFrontEnd::class, 'goldStatus']); //UAE Dirham price
 Route::get('gold-price-business-insider', [GoldFrontEnd::class, 'goldPriceBI']); //UAE Dirham price
+Route::get('gold-price-apon-jewelary', [GoldFrontEnd::class, 'showBroadcastData']); //UAE Dirham price
 Route::get('site-setting', [SettingController::class, 'index']); //app setting
+
+// **************************** historical Data ***********
+Route::get('type', [GoldFrontEnd::class, 'type']);
+Route::get('historical-data', [GoldFrontEnd::class, 'getHistoricalData']);
+
 
 //product alart, show all data for web, show single data for web, app, data update for web status change
 Route::apiResource('set-alart', AlartTableController::class)->except(['create', 'edit', 'update']);
@@ -57,3 +63,5 @@ Route::get('order-list', [OrderController::class, 'index'])->middleware(['auth:s
 // ************************** gold trands*****************
 Route::get('gold-trends', [OrderController::class, 'goldTrends']);
 
+// **************************** Profile edit api **********
+Route::put('profile-update', [UserController::class,'updateProfile'])->middleware(['auth:sanctum', 'ability:user']);

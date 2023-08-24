@@ -167,4 +167,33 @@ class UserController extends Controller
     {
         return $request->user();
     }
+
+    // update profile 
+    public function updateProfile(Request $request)
+    {
+        // Get the authenticated user from the token
+        $user = $request->user();
+        // Update user attributes based on the provided input or keep the existing values
+        if ($request->has('name')) {
+            $user->name = $request->input('name');
+        }
+
+        if ($request->has('email')) {
+            $user->email = $request->input('email');
+        }
+
+        // Hash and update password only if a new password is provided
+        if ($request->has('password')) {
+            $user->password = Hash::make($request->input('password'));
+        }
+
+        if ($request->has('email_verified_at')) {
+            $user->email_verified_at = $request->input('email_verified_at');
+        }
+
+        // Save the user's changes
+        $user->save();
+
+        return response()->json(['message' => 'Profile updated successfully'],201);
+    }
 }
