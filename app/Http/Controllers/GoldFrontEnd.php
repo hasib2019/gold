@@ -353,7 +353,7 @@ class GoldFrontEnd extends Controller
     {
         try {
             $response = Http::get('http://bcast.apanjewellery.com:7767/VOTSBroadcastStreaming/Services/xml/GetLiveRateByTemplateID/apan', [
-                '_' => time(), // Adding a timestamp as a cache buster
+                '_' => time()
             ]);
 
             $data = $response->body(); // Get the plain text data
