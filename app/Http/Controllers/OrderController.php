@@ -24,7 +24,6 @@ class OrderController extends Controller
                 ->where('orders.user_id', $userId)
                 ->select('orders.user_id','orders.product_id','orders.status','orders.created_at','orders.updated_at', 'products.product_name', 'products.purity', 'products.shape', 'products.product_image')
                 ->get();
-
             return response()->json(['error' => null, 'data' => $orderData], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'An error occurred', 'data' => null], 500);
