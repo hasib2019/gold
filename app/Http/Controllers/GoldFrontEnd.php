@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Client\RequestException;
+
 class GoldFrontEnd extends Controller
 {
     /**
@@ -351,38 +352,36 @@ class GoldFrontEnd extends Controller
 
     public function fetchBroadcastData()
     {
-        $maxRetries = 3;
         try {
-            retry($maxRetries, function () {
-                $response = Http::get('http://bcast.apanjewellery.com:7767/VOTSBroadcastStreaming/Services/xml/GetLiveRateByTemplateID/apan', [
-                    '_' => time()
-                ]);
-    
-                $data = $response->body(); // Get the plain text data
-                $rows = explode("\n", $data); // Split data into rows
-    
-                $result = [];
-    
-                foreach ($rows as $row) {
-                    $columns = explode("\t", trim($row)); // Split row into columns
-                    if (count($columns) >= 4) {
-                        $result[] = [
-                            'id' => $columns[0],
-                            'type' => $columns[1],
-                            'bid_sell' => $columns[2],
-                            'ask_buy' => $columns[3],
-                            'low' => $columns[4],
-                            'high' => $columns[5]
-                        ];
-                    }
+            $response = Http::get('http://bcast.apanjewellery.com:7767/VOTSBroadcastStreaming/Services/xml/GetLiveRateByTemplateID/apan', [
+                '_' => time()
+            ]);
+            $data = $response->body(); // Get the plain text data
+            $rows = explode("\n", $data); // Split data into rows
+
+            $result = [];
+
+            foreach ($rows as $row) {
+                $columns = explode("\t", trim($row)); // Split row into columns
+                if (count($columns) >= 4) {
+                    $result[] = [
+                        'id' => $columns[0],
+                        'type' => $columns[1],
+                        'bid_sell' => $columns[2],
+                        'ask_buy' => $columns[3],
+                        'low' => $columns[4],
+                        'high' => $columns[5]
+                    ];
                 }
-    
-                return $result;
-            }, 100);
-        } catch (RequestException $e) {
-            // Handle the exception, log the error, and provide a user-friendly message
-            Log::error('Error connecting to the server: ' . $e->getMessage());
-            return response()->json(['error' => 'Could not fetch data from the server'], 500);
+            }
+
+            return $result;
+        } catch (\Exception $e) {
+            Log::error('Error fetching live rates: ' . $e->getMessage());
+
+            return response()->json([
+                'error' => 'An error occurred while fetching live rates.',
+            ], 500);
         }
     }
 
