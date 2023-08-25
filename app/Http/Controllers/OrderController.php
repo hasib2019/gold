@@ -22,7 +22,7 @@ class OrderController extends Controller
             $orderData = DB::table('orders')
                 ->join('products', 'orders.product_id', '=', 'products.id')
                 ->where('orders.user_id', $userId)
-                ->select('orders.*', 'products.*')
+                ->select('orders.user_id','orders.product_id','orders.status','orders.created_at','orders.updated_at', 'products.product_name', 'products.purity', 'products.shape', 'products.product_image')
                 ->get();
 
             return response()->json(['error' => null, 'data' => $orderData], 200);
