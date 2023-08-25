@@ -376,12 +376,10 @@ class GoldFrontEnd extends Controller
             }
 
             return $result;
-        } catch (\Exception $e) {
-            Log::error('Error fetching live rates: ' . $e->getMessage());
-
-            return response()->json([
-                'error' => 'An error occurred while fetching live rates.',
-            ], 500);
+        } catch (RequestException $e) {
+            // Handle the exception, log the error, and provide a user-friendly message
+            Log::error('Error connecting to the server: ' . $e->getMessage());
+            return response()->json(['error' => 'Could not fetch data from the server'], 500);
         }
     }
 
