@@ -356,7 +356,7 @@ class GoldFrontEnd extends Controller
             $response = Http::get('http://bcast.apanjewellery.com:7767/VOTSBroadcastStreaming/Services/xml/GetLiveRateByTemplateID/apan', [
                 '_' => time()
             ]);
-            dd($response);
+            // dd($response);
             $data = $response->body(); // Get the plain text data
             $rows = explode("\n", $data); // Split data into rows
 
