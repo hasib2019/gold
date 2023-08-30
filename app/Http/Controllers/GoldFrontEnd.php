@@ -159,13 +159,13 @@ class GoldFrontEnd extends Controller
                     $UsdPrice  = $lastPrice + $changePercent;  // 1932.06 + .36 = 1932.42
                     $UsdAsk = $lastPrice + ($changePercent * 2);  // 1932.42 + (.36*2) = 1932.78 $UsdPrice
                     $UsdBid = $lastPrice - ($changePercent * 2);  // 1932.42 - (.36*2) = 1931.7 $UsdPrice
-                    $UsdHighPrice = $UsdPrice + ($changePercent * 4); // 1932.42 + (.36*4) = 1933.86
+                    $UsdHighPrice = $UsdPrice + ($changePercent * 2); // 1932.42 + (.36*4) = 1933.86
                     $UsdLowPrice = $UsdPrice - $changeAbsolute - $changePercent; // 1932.42 - 6.96 - 0.36 = 1925.10
                 } elseif ($changeAbsolute < 0 && $changePercent < 0) {
                     $UsdPrice  = $lastPrice - $changePercent;  // 1930.05 - (-.36) = 1932.42
                     $UsdAsk = $lastPrice - ($changePercent * 2);  // 1930.31 - (-.36*2) = 1932.78
                     $UsdBid = $lastPrice + ($changePercent * 2);  // 1930.31 + (-.36*2) = 1931.7
-                    $UsdHighPrice = $UsdPrice - ($changePercent * 4); // 1932.42 - (-.36*4) = 1933.86
+                    $UsdHighPrice = $UsdPrice - ($changePercent * 2); // 1932.42 - (-.36*4) = 1933.86
                     $UsdLowPrice = $UsdPrice + $changeAbsolute + $changePercent; // 1932.42 + (-6.96) + (-0.36) = 1925.10
                 } else {
                     $UsdPrice  = $lastPrice;
@@ -264,13 +264,13 @@ class GoldFrontEnd extends Controller
                 $UsdPrice  = $lastPrice + $changePercent;  // 1932.06 + .36 = 1932.42
                 $UsdAsk = $lastPrice + ($changePercent * 2);  // 1932.42 + (.36*2) = 1932.78
                 $UsdBid = $lastPrice - ($changePercent * 2);  // 1932.42 - (.36*2) = 1931.7
-                $UsdHighPrice = $UsdPrice + ($changePercent * 4); // 1932.42 + (.36*4) = 1933.86
+                $UsdHighPrice = $UsdPrice + ($changePercent * 2); // 1932.42 + (.36*4) = 1933.86
                 $UsdLowPrice = $UsdPrice - $changeAbsolute - $changePercent; // 1932.42 - 6.96 - 0.36 = 1925.10
             } elseif ($changeAbsolute < 0 && $changePercent < 0) {
                 $UsdPrice  = $lastPrice - $changePercent;  // 1930.05 - (-.36) = 1932.42
                 $UsdAsk = $lastPrice - ($changePercent * 2);  // 1930.31 - (-.36*2) = 1932.78
                 $UsdBid = $lastPrice + ($changePercent * 2);  // 1930.31 + (-.36*2) = 1931.7
-                $UsdHighPrice = $UsdPrice - ($changePercent * 4); // 1932.42 - (-.36*4) = 1933.86
+                $UsdHighPrice = $UsdPrice - ($changePercent * 2); // 1932.42 - (-.36*4) = 1933.86
                 $UsdLowPrice = $UsdPrice + $changeAbsolute + $changePercent; // 1932.42 + (-6.96) + (-0.36) = 1925.10
             } else {
                 $UsdPrice  = $lastPrice;
