@@ -370,8 +370,8 @@ class GoldFrontEnd extends Controller
                         'type' => $columns[1],
                         'bid_sell' => $columns[2],
                         'ask_buy' => $columns[3],
-                        'low' => $columns[4],
-                        'high' => $columns[5]
+                        'high' => $columns[4],
+                        'low' => $columns[5]
                     ];
                 }
             }
