@@ -418,4 +418,11 @@ class GoldFrontEnd extends Controller
 
         return response()->json($historicalData);
     }
+
+    // for saifur vai 
+    public function showBroadcastDataCrystal(Request $request)
+    {
+    return true;
+    }
+        
 }
