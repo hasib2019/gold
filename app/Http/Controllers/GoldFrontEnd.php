@@ -422,7 +422,143 @@ class GoldFrontEnd extends Controller
     // for saifur vai 
     public function showBroadcastDataCrystal(Request $request)
     {
-    return true;
+        $response = Http::get('http://bcast.apanjewellery.com:7767/VOTSBroadcastStreaming/Services/xml/GetLiveRateByTemplateID/apan', [
+            '_' => time()
+        ]);
+
+        $jsonData = $response->body(); // Get the plain text data
+        $rows = explode("\n", $jsonData);
+        $result = [];
+
+        if ($rows !== null && count($rows) > 0){
+            $firstObject = $rows[0];
+
+            $elements = explode("\t", trim($firstObject));
+
+            $jsonData = [
+                'id' => $elements[0],
+                'type' => $elements[1],
+                'bid_sell' => $elements[2],
+                'ask_buy' => $elements[3],
+                'high' => $elements[4],
+                'low' => $elements[5]
+            ];
+
+            $jsonString = json_encode($jsonData);
+
+            $data = json_decode($jsonString, true);
+
+            $goldOzId = $data['id'];
+            $goldOztype = $data['type'];
+            $goldOzbid_sell = $data['bid_sell'];
+            $goldOzask_buy = $data['ask_buy'];
+            $goldOzhigh = $data['high'];
+            $goldOzlow = $data['low'];
+
+            $goldOztoTTB = 13.7639;
+            $mes24K999 = 116.64*0.999;
+            $mes24k995 = 116.64*0.995;
+            $mes22k92 = 0.92;
+            $kiloBar = 1000;
+
+            $TTBid = "7524";
+            $TTBtype = "TEN TOLA BAR";
+            $TTBbid_sell = sprintf("%0.2f",($goldOzbid_sell * $goldOztoTTB));
+            $TTBask_buy = sprintf("%0.2f",($goldOzask_buy * $goldOztoTTB));
+            $TTBhigh = sprintf("%0.2f",($goldOzhigh * $goldOztoTTB));
+            $TTBlow = sprintf("%0.2f",($goldOzlow * $goldOztoTTB));
+
+            $tenTolaBar = [
+                'id' => $TTBid,
+                'type' => $TTBtype,
+                'bid_sell' => $TTBbid_sell,
+                'ask_buy' => $TTBask_buy,
+                'high' => $TTBhigh,
+                'low' => $TTBlow,
+            ];
+
+
+            $Gold999id = "7526";
+            $Gold999type = "GOLD 9999";
+            $Gold999bid_sell = sprintf("%0.2f",($TTBbid_sell / $mes24K999));
+            $Gold999ask_buy = sprintf("%0.2f",($TTBask_buy / $mes24K999));
+            $Gold999high = sprintf("%0.2f",($TTBhigh / $mes24K999));
+            $Gold999low = sprintf("%0.2f",($TTBlow / $mes24K999));
+
+            $gold999 = [
+                'id' => $Gold999id,
+                'type' => $Gold999type,
+                'bid_sell' => $Gold999bid_sell,
+                'ask_buy' => $Gold999ask_buy,
+                'high' => $Gold999high,
+                'low' => $Gold999low,
+            ];
+
+            $Gold92id = "8558";
+            $Gold92type = "GOLD PURE 92";
+            $Gold92bid_sell = sprintf("%0.2f",($Gold999bid_sell * $mes22k92));
+            $Gold92ask_buy = sprintf("%0.2f",($Gold999ask_buy * $mes22k92));
+            $Gold92high = sprintf("%0.2f",($Gold999high * $mes22k92));
+            $Gold92low = sprintf("%0.2f",($Gold999low * $mes22k92));
+
+            $gold92 = [
+                'id' => $Gold92id,
+                'type' => $Gold92type,
+                'bid_sell' => $Gold92bid_sell,
+                'ask_buy' => $Gold92ask_buy,
+                'high' => $Gold92high,
+                'low' => $Gold92low,
+            ];
+
+            $KiloBar9999id = "7523";
+            $KiloBar9999type = "KILO BAR 9999";
+            $KiloBar9999bid_sell = sprintf("%0.2f",((($TTBbid_sell / $mes24K999) * $kiloBar)));
+            $KiloBar9999ask_buy = sprintf("%0.2f",((($TTBask_buy / $mes24K999) * $kiloBar)));
+            $KiloBar9999high = sprintf("%0.2f",((($TTBhigh / $mes24K999)* $kiloBar)));
+            $KiloBar9999low = sprintf("%0.2f",((($TTBlow / $mes24K999)* $kiloBar)));
+
+            $kiloBar9999 = [
+                'id' => $KiloBar9999id,
+                'type' => $KiloBar9999type,
+                'bid_sell' => $KiloBar9999bid_sell,
+                'ask_buy' => $KiloBar9999ask_buy,
+                'high' => $KiloBar9999high,
+                'low' => $KiloBar9999low,
+            ];
+
+            $KiloBar995id = "7522";
+            $KiloBar995type = "KILO BAR 995";
+            $KiloBar995bid_sell = sprintf("%0.2f",((($TTBbid_sell / $mes24k995) * $kiloBar)));
+            $KiloBar995ask_buy = sprintf("%0.2f",((($TTBask_buy / $mes24k995) * $kiloBar)));
+            $KiloBar995high = sprintf("%0.2f",((($TTBhigh / $mes24k995)* $kiloBar)));
+            $KiloBar995low = sprintf("%0.2f",((($TTBlow / $mes24k995)* $kiloBar)));
+
+            $kiloBar995 = [
+                'id' => $KiloBar9999id,
+                'type' => $KiloBar995type,
+                'bid_sell' => $KiloBar995bid_sell,
+                'ask_buy' => $KiloBar995ask_buy,
+                'high' => $KiloBar995high,
+                'low' => $KiloBar995low,
+            ];
+
+            $mergedArray = array_merge($data, $gold92, $gold999, $tenTolaBar, $kiloBar995, $kiloBar9999);
+
+            $mergedArray = [];
+
+            $mergedArray[] = $data;
+            $mergedArray[] = $gold92;
+            $mergedArray[] = $gold999;
+            $mergedArray[] = $tenTolaBar;
+            $mergedArray[] = $kiloBar995;
+            $mergedArray[] = $kiloBar9999;
+            
+        } else {
+            // Handle JSON parsing error
+            echo "Error parsing JSON data";
+        }
+
+    return $mergedArray;
     }
         
 }
