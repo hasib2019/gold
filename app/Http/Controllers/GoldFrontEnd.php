@@ -534,12 +534,12 @@ class GoldFrontEnd extends Controller
             $KiloBar995low = sprintf("%0.2f",((($TTBlow / $mes24k995)* $kiloBar)));
 
             $kiloBar995 = [
-                'id' => $KiloBar9999id,
-                'type' => $KiloBar995type,
-                'bid_sell' => $KiloBar995bid_sell,
-                'ask_buy' => $KiloBar995ask_buy,
-                'high' => $KiloBar995high,
-                'low' => $KiloBar995low,
+                'id' => "7522",
+                'type' => "KILO BAR 995",
+                'bid_sell' => sprintf("%0.2f",((($TTBbid_sell / $mes24k995) * $kiloBar))),
+                'ask_buy' => sprintf("%0.2f",((($TTBask_buy / $mes24k995) * $kiloBar))),
+                'high' => sprintf("%0.2f",((($TTBhigh / $mes24k995)* $kiloBar))),
+                'low' => sprintf("%0.2f",((($TTBlow / $mes24k995)* $kiloBar))),
             ];
 
             $mergedArray = array_merge($data, $gold92, $gold999, $tenTolaBar, $kiloBar995, $kiloBar9999);
