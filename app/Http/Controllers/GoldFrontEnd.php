@@ -438,22 +438,46 @@ class GoldFrontEnd extends Controller
             $jsonData = [
                 'id' => $elements[0],
                 'type' => $elements[1],
-                'bid_sell' => $elements[2],
-                'ask_buy' => $elements[3],
+                'bid_sell' => $elements[2]-1,
+                'ask_buy' => $elements[3]-1,
                 'high' => $elements[4],
                 'low' => $elements[5]
             ];
 
             $jsonString = json_encode($jsonData);
 
-            $data = json_decode($jsonString, true);
+            $goldOz = json_decode($jsonString, true);
 
-            $goldOzId = $data['id'];
-            $goldOztype = $data['type'];
-            $goldOzbid_sell = $data['bid_sell'];
-            $goldOzask_buy = $data['ask_buy'];
-            $goldOzhigh = $data['high'];
-            $goldOzlow = $data['low'];
+            $goldOzId = $goldOz['id'];
+            $goldOztype = $goldOz['type'];
+            $goldOzbid_sell = $goldOz['bid_sell'];
+            $goldOzask_buy = $goldOz['ask_buy'];
+            $goldOzhigh = $goldOz['high'];
+            $goldOzlow = $goldOz['low'];
+
+            $secondObject = $rows[1];
+
+            $goldelements = explode("\t", trim($secondObject));
+
+            $goldjsonData = [
+                'id' => $goldelements[0],
+                'type' => $goldelements[1],
+                'bid_sell' => $goldelements[2],
+                'ask_buy' => $goldelements[3],
+                'high' => $goldelements[4],
+                'low' => $goldelements[5]
+            ];
+
+            $goldjsonString = json_encode($goldjsonData);
+
+            $gold = json_decode($goldjsonString, true);
+
+            $goldId = $gold['id'];
+            $goldtype = $gold['type'];
+            $goldbid_sell = $gold['bid_sell'];
+            $goldask_buy = $gold['ask_buy'];
+            $goldhigh = $gold['high'];
+            $goldlow = $gold['low'];
 
             $goldOztoTTB = 13.7639;
             $mes24K999 = 116.64*0.999;
@@ -542,11 +566,12 @@ class GoldFrontEnd extends Controller
                 'low' => sprintf("%0.2f",((($TTBlow / $mes24k995)* $kiloBar))),
             ];
 
-            $mergedArray = array_merge($data, $gold92, $gold999, $tenTolaBar, $kiloBar995, $kiloBar9999);
+            $mergedArray = array_merge($goldOz, $gold, $gold92, $gold999, $tenTolaBar, $kiloBar995, $kiloBar9999);
 
             $mergedArray = [];
 
-            $mergedArray[] = $data;
+            $mergedArray[] = $goldOz;
+            $mergedArray[] = $gold;
             $mergedArray[] = $gold92;
             $mergedArray[] = $gold999;
             $mergedArray[] = $tenTolaBar;
