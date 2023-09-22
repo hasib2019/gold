@@ -92,6 +92,29 @@ class UserController extends Controller
             return response(['id' => $user->id, 'token' => $plainTextToken, 'error' => 0, 'message' => 'Login Successfully'], 200);
     }
 
+    public function weblogin(Request $request)
+    {
+        $creds = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        $user = User::where('email', $creds['email'])->first();
+
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            return response(['id' => NULL, 'token' => NULL, 'error' => 1, 'message' => 'invalid credentials'], 401);
+        }
+
+        if (config('hydra.delete_previous_access_tokens_on_login', false)) {
+            $user->tokens()->delete();
+        }
+
+        $roles = $user->roles->pluck('slug')->all();
+
+        $plainTextToken = $user->createToken('hydra-api-token', $roles)->plainTextToken;
+            return response(['id' => $user->id, 'token' => $plainTextToken, 'error' => 0, 'message' => 'Login Successfully'], 200);
+    }
+
     /**
      * Display the specified resource.
      *
