@@ -438,8 +438,8 @@ class GoldFrontEnd extends Controller
             $jsonData = [
                 'id' => $elements[0],
                 'type' => $elements[1],
-                'bid_sell' => $elements[2]-1,
-                'ask_buy' => $elements[3]-1,
+                'bid_sell' => $elements[2],
+                'ask_buy' => $elements[3],
                 'high' => $elements[4],
                 'low' => $elements[5]
             ];
