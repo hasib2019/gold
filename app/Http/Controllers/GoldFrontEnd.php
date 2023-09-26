@@ -405,16 +405,24 @@ class GoldFrontEnd extends Controller
 
     public function getHistoricalData(Request $request)
     {
-        $type = $request->query('type', 'GOLD OZ');
+        $type = $request->query('type', null);
         $endDate = $request->query('endDate', '2023-08-25'); // Default date
         $days = $request->query('days', 7); // Default number of days
 
+     if($type){
         $historicalData = LiveRateData::select('type', 'ask_buy', 'created_at')
-            ->where('type', $type)
-            ->whereDate('created_at', '<=', $endDate)
-            ->whereDate('created_at', '>', Carbon::parse($endDate)->subDays($days))
-            ->orderBy('created_at', 'desc')
-            ->get();
+        ->where('type', $type)
+        ->whereDate('created_at', '<=', $endDate)
+        ->whereDate('created_at', '>', Carbon::parse($endDate)->subDays($days))
+        ->orderBy('created_at', 'desc')
+        ->get();
+     } else {
+        $historicalData = LiveRateData::select('type', 'ask_buy', 'created_at')
+        ->whereDate('created_at', '<=', $endDate)
+        ->whereDate('created_at', '>', Carbon::parse($endDate)->subDays($days))
+        ->orderBy('created_at', 'desc')
+        ->get();
+     }
 
         return response()->json($historicalData);
     }
@@ -583,7 +591,8 @@ class GoldFrontEnd extends Controller
             echo "Error parsing JSON data";
         }
 
-    return $mergedArray;
+    // return $mergedArray;
+    return response()->json($mergedArray);
     }
         
 }
