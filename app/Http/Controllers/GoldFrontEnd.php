@@ -591,8 +591,7 @@ class GoldFrontEnd extends Controller
             echo "Error parsing JSON data";
         }
 
-    // return $mergedArray;
-    return response()->json($mergedArray);
+    return $mergedArray;
     }
         
 }
