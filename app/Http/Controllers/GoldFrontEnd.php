@@ -149,7 +149,7 @@ class GoldFrontEnd extends Controller
         $days = $request->query('days', 7); // Default number of days
 
      if($type){
-        $historicalData = LiveRateData::select('type', 'ask_buy', 'created_at')
+        $historicalData = LiveRateData::select('type','bid_sell', 'ask_buy', 'low', 'high', 'created_at')
         ->where('type', $type)
         ->whereDate('created_at', '<=', $endDate)
         ->whereDate('created_at', '>', Carbon::parse($endDate)->subDays($days))
