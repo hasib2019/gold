@@ -21,7 +21,7 @@ class StoreLiveRateData extends Command
             $response = Http::get('http://bcast.apanjewellery.com:7767/VOTSBroadcastStreaming/Services/xml/GetLiveRateByTemplateID/apan', [
                 '_' => time(), // Adding a timestamp as a cache buster
             ]);
-
+            if ($response->ok()) {
             $data = $response->body(); // Get the plain text data
             $rows = explode("\n", $data); // Split data into rows
 
@@ -37,5 +37,8 @@ class StoreLiveRateData extends Command
             }
 
             $this->info('Data stored successfully.');
+        } else {
+            $this->error('API request failed.');
+        }
     }
 }
