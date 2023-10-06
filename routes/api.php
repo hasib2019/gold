@@ -60,6 +60,7 @@ Route::get('product', [ProductController::class, 'index']); //product
 
 // ************************ Order ************************
 Route::post('order', [OrderController::class, 'store'])->middleware(['auth:sanctum', 'ability:admin,super-admin,user']);
+Route::put('order-status', [OrderController::class, 'status'])->middleware(['auth:sanctum', 'ability:admin,super-admin']);
 Route::get('order-list', [OrderController::class, 'index'])->middleware(['auth:sanctum', 'ability:admin,super-admin,user']);
 // ************************** gold trands*****************
 Route::get('gold-trends', [OrderController::class, 'goldTrends']);

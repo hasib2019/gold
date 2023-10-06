@@ -15,18 +15,44 @@ class OrderController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $userId = Auth::id(); // Get the authenticated user's ID
-            $orderData = DB::table('orders')
-                ->join('products', 'orders.product_id', '=', 'products.id')
-                ->where('orders.user_id', $userId)
-                ->select('orders.user_id','orders.product_id','orders.status','orders.created_at','orders.updated_at', 'products.product_name', 'products.purity', 'products.shape', 'products.product_image')
-                ->get();
+            $loggedInUser = $request->user();
+            $userId = Auth::id();
+            if ($loggedInUser->tokenCan('admin')) {
+                $orderData = DB::table('orders')
+                    ->join('products', 'orders.product_id', '=', 'products.id')
+                    ->select('orders.id', 'orders.user_id', 'orders.product_id', 'orders.status', 'orders.created_at', 'orders.updated_at', 'products.product_name', 'products.purity', 'products.shape', 'products.product_image')
+                    ->get();
+            } else {
+                $orderData = DB::table('orders')
+                    ->join('products', 'orders.product_id', '=', 'products.id')
+                    ->where('orders.user_id', $userId)
+                    ->select('orders.id', 'orders.user_id', 'orders.product_id', 'orders.status', 'orders.created_at', 'orders.updated_at', 'products.product_name', 'products.purity', 'products.shape', 'products.product_image')
+                    ->get();
+            }
+
             return response()->json(['error' => null, 'data' => $orderData], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'An error occurred', 'data' => null], 500);
+        }
+    }
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function status(Request $request)
+    {
+        $loggedInUser = $request->user();
+        
+        if ($loggedInUser->tokenCan('admin')) {
+            $order = Order::findOrFail($request->id);
+            $order->update(['status' => $request->status]);
+            return response()->json(['message' => 'updated successfully']);
+        } else {
+            return response()->json(['status' => '401', 'message' => 'Not update']);
         }
     }
 
@@ -159,5 +185,4 @@ class OrderController extends Controller
             return response()->json(['error' => 'An error occurred', 'data' => null], 500);
         }
     }
-
 }
