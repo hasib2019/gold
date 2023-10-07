@@ -13,8 +13,8 @@ class Kernel extends ConsoleKernel {
      * @return void
      */
     protected function schedule(Schedule $schedule) {
-        // $schedule->command('inspire')->hourly();
         $schedule->command('data:store')->dailyAt('23:10');
+        $schedule->command('data:storehoure')->hourly();
     }
 
     /**

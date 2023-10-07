@@ -13,11 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('gold_weights', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('weight_name');
-            $table->string('type');
-            $table->string('grams_weight');
+        Schema::create('live_data_hours', function (Blueprint $table) {
+            $table->id();
+            $table->string('type', 20)->nullable();
+            $table->decimal('bid_sell', 10, 2)->nullable();
+            $table->decimal('ask_buy', 10, 2)->nullable();
+            $table->decimal('low', 10, 2)->nullable();
+            $table->decimal('high', 10, 2)->nullable();
             $table->timestamps();
         });
     }
@@ -29,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('gold_weights');
+        Schema::dropIfExists('live_data_hours');
     }
 };

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-use App\Models\ExcMoneyRate;
+use App\Models\LiveDataHour;
 use App\Models\LiveRateData;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
@@ -164,6 +164,15 @@ class GoldFrontEnd extends Controller
      }
 
         return response()->json($historicalData);
+    }
+
+    
+    public function getHourlyLiveRateData(Request $request)
+    {
+        $tenDaysAgo = Carbon::now()->subDays(10);
+        $liveRateHourlyData = LiveDataHour::whereDate('created_at', '>=', $tenDaysAgo)->get();
+
+        return response()->json($liveRateHourlyData);
     }
 
     // for saifur vai 

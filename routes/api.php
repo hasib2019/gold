@@ -51,6 +51,7 @@ Route::get('site-setting', [SettingController::class, 'index']); //app setting
 // **************************** historical Data ***********
 Route::get('type', [GoldFrontEnd::class, 'type']);
 Route::get('historical-data', [GoldFrontEnd::class, 'getHistoricalData']);
+Route::get('live-rate-hourly', [GoldFrontEnd::class, 'getHourlyLiveRateData']);
 
 
 //product alart, show all data for web, show single data for web, app, data update for web status change
