@@ -6,6 +6,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserRoleController;
 use App\Http\Controllers\GoldFrontEnd;
+use App\Http\Controllers\IncrDecrController;
 use App\Http\Controllers\NewsAlartController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
@@ -39,6 +40,8 @@ Route::post('login', [UserController::class, 'login']);
 
 Route::apiResource('roles', RoleController::class)->except(['create', 'edit'])->middleware(['auth:sanctum', 'ability:admin,super-admin,user']);
 Route::apiResource('users.roles', UserRoleController::class)->except(['create', 'edit', 'show', 'update'])->middleware(['auth:sanctum', 'ability:admin,super-admin']);
+
+Route::apiResource('incr-decr', IncrDecrController::class)->middleware(['auth:sanctum', 'ability:admin,super-admin']);
 
 // ****************************** Front end without auth api *************************
 Route::get('gold-price', [GoldFrontEnd::class, 'goldPrice']); //UAE Dirham price
