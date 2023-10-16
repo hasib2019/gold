@@ -41,8 +41,8 @@ Route::post('login', [UserController::class, 'login']);
 Route::apiResource('roles', RoleController::class)->except(['create', 'edit'])->middleware(['auth:sanctum', 'ability:admin,super-admin,user']);
 Route::apiResource('users.roles', UserRoleController::class)->except(['create', 'edit', 'show', 'update'])->middleware(['auth:sanctum', 'ability:admin,super-admin']);
 
-Route::apiResource('incr-decr', IncrDecrController::class)->middleware(['auth:sanctum', 'ability:admin,super-admin']);
-
+Route::get('incr-decr', [IncrDecrController::class, 'index'])->middleware(['auth:sanctum', 'ability:admin,super-admin']);
+Route::put('incr-decr-update', [IncrDecrController::class, 'update'])->middleware(['auth:sanctum', 'ability:admin,super-admin']);
 // ****************************** Front end without auth api *************************
 Route::get('gold-price', [GoldFrontEnd::class, 'goldPrice']); //UAE Dirham price
 Route::get('gold-price-status', [GoldFrontEnd::class, 'goldStatus']); //UAE Dirham price

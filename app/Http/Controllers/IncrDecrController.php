@@ -87,9 +87,18 @@ class IncrDecrController extends Controller
      * @param  \App\Models\IncrDecr  $incrDecr
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        dd('work put', $id);
+        $loggedInUser = $request->user();
+        
+        if ($loggedInUser->tokenCan('admin')) {
+            $order = IncrDecr::findOrFail($request->id);
+            $order->update(['incr' => $request->incr]);
+            $order->update(['decr' => $request->decr]);
+            return response()->json(['message' => 'updated successfully']);
+        } else {
+            return response()->json(['status' => '401', 'message' => 'Not update']);
+        }
     }
 
     /**
