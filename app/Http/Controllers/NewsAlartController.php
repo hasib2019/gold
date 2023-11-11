@@ -36,7 +36,51 @@ class NewsAlartController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            // Validate the request data
+            $creds = $request->validate([
+                'title' => 'required',
+                'description' => 'required'
+            ]);
+
+            // Create a new instance of the Order model
+            $newsAlart = new NewsAlart();
+
+            $newsAlart->title = $creds['title'];
+            $newsAlart->description = $creds['description'];
+            $newsAlart->date = \Carbon\Carbon::now()->format('Y-m-d');
+            $newsAlart->status = true;
+
+            // Save the model to the database
+            if ($newsAlart->save()) {
+                return response()->json([
+                    'error' => 0,
+                    'message' => 'News alart create successfully',
+                    'data' => $newsAlart,
+                ], 201);
+            } else {
+                // Database save failed
+                return response([
+                    'error' => 1,
+                    'message' => 'Failed to save News alart to the database',
+                    'data' => '',
+                ], 500);
+            }
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Validation failed
+            return response([
+                'error' => 1,
+                'message' => 'Validation Error',
+                'data' => $e->errors(), // Return validation error messages
+            ], 422);
+        } catch (\Exception $e) {
+            // Other unexpected errors
+            return response([
+                'error' => 1,
+                'message' => 'An error occurred: ' . $e->getMessage(),
+                'data' => '',
+            ], 500);
+        }
     }
 
     /**

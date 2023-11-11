@@ -60,6 +60,7 @@ Route::get('live-rate-hourly', [GoldFrontEnd::class, 'getHourlyLiveRateData']);
 //product alart, show all data for web, show single data for web, app, data update for web status change
 Route::apiResource('set-alart', AlartTableController::class)->except(['create', 'edit', 'update']);
 Route::get('/news-alart', [NewsAlartController::class, 'index']); //News Alart
+Route::post('/news-alart', [NewsAlartController::class, 'store'])->middleware(['auth:sanctum', 'ability:admin,super-admin']);; //News Alart post
 Route::get('product', [ProductController::class, 'index']); //product
 
 // ************************ Order ************************

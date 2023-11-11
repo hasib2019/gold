@@ -167,13 +167,34 @@ class GoldFrontEnd extends Controller
     }
 
     
-    public function getHourlyLiveRateData(Request $request)
-    {
-        $tenDaysAgo = Carbon::now()->subDays(10);
-        $liveRateHourlyData = LiveDataHour::whereDate('created_at', '>=', $tenDaysAgo)->get();
+    // public function getHourlyLiveRateData(Request $request)
+    // {
+    //     $tenDaysAgo = Carbon::now()->subDays(10);
+    //     $liveRateHourlyData = LiveDataHour::whereDate('created_at', '>=', $tenDaysAgo)->get();
 
-        return response()->json($liveRateHourlyData);
+    //     return response()->json($liveRateHourlyData);
+    // }
+    public function getHourlyLiveRateData(Request $request)
+{
+    $tenDaysAgo = Carbon::now()->subDays(10);
+    $liveRateHourlyData = LiveDataHour::whereDate('created_at', '>=', $tenDaysAgo)->get();
+
+    $groupedData = [];
+
+    foreach ($liveRateHourlyData as $data) {
+        $type = $data->type;
+
+        // Check if the type is already in the grouped data array
+        if (!isset($groupedData[$type])) {
+            $groupedData[$type] = [];
+        }
+
+        // Add the data to the appropriate type
+        $groupedData[$type][] = $data;
     }
+
+    return response()->json($groupedData);
+}
 
     // for saifur vai 
     public function showBroadcastDataCrystal(Request $request)
