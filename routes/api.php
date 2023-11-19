@@ -13,6 +13,7 @@ use App\Http\Controllers\ProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\SupportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,7 +31,7 @@ use App\Http\Controllers\SettingController;
 Route::get('hydra', [HydraController::class, 'hydra']);
 Route::get('hydra/version', [HydraController::class, 'version']);
 
-Route::apiResource('users', UserController::class)->except(['edit', 'create', 'store', 'update'])->middleware(['auth:sanctum', 'ability:admin,super-admin']);
+Route::apiResource('users', UserController::class)->except(['edit', 'create', 'store', 'update'])->middleware(['auth:sanctum', 'ability:admin,super-admin,user']);
 Route::post('users', [UserController::class, 'store']);
 Route::put('users/{user}', [UserController::class, 'update'])->middleware(['auth:sanctum', 'ability:admin,super-admin,user']);
 Route::post('users/{user}', [UserController::class, 'update'])->middleware(['auth:sanctum', 'ability:admin,super-admin,user']);
@@ -40,8 +41,8 @@ Route::post('login', [UserController::class, 'login']);
 
 Route::apiResource('roles', RoleController::class)->except(['create', 'edit'])->middleware(['auth:sanctum', 'ability:admin,super-admin,user']);
 Route::apiResource('users.roles', UserRoleController::class)->except(['create', 'edit', 'show', 'update'])->middleware(['auth:sanctum', 'ability:admin,super-admin']);
-
-Route::get('incr-decr', [IncrDecrController::class, 'index'])->middleware(['auth:sanctum', 'ability:admin,super-admin']);
+// **************************** incr-decr *******************************************
+Route::get('incr-decr', [IncrDecrController::class, 'index']);
 Route::put('incr-decr-update', [IncrDecrController::class, 'update'])->middleware(['auth:sanctum', 'ability:admin,super-admin']);
 // ****************************** Front end without auth api *************************
 Route::get('gold-price', [GoldFrontEnd::class, 'goldPrice']); //UAE Dirham price
@@ -72,3 +73,7 @@ Route::get('gold-trends', [OrderController::class, 'goldTrends']);
 
 // **************************** Profile edit api **********
 Route::put('profile-update', [UserController::class,'updateProfile'])->middleware(['auth:sanctum', 'ability:user']);
+
+// **************************** Support api **********
+Route::get('/supports', [SupportController::class, 'index']);
+Route::post('/supports', [SupportController::class, 'store']);
