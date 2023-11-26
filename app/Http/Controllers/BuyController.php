@@ -7,79 +7,24 @@ use Illuminate\Http\Request;
 
 class BuyController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
-        //
+        $buys = Buy::all();
+        return response()->json($buys);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
-        //
-    }
+        $request->validate([
+            'buyDate' => 'required',
+            'price' => 'required',
+        ]);
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Buy  $buy
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Buy $buy)
-    {
-        //
-    }
+        $buy = Buy::create([
+            'buyDate' => $request->input('buyDate'),
+            'price' => $request->input('price'),
+        ]);
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Buy  $buy
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Buy $buy)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Buy  $buy
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Buy $buy)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Buy  $buy
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Buy $buy)
-    {
-        //
+        return response()->json($buy, 201);
     }
 }

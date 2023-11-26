@@ -14,6 +14,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\SupportController;
+use App\Http\Controllers\BuyController;
+use App\Http\Controllers\SellController;
 
 /*
 |--------------------------------------------------------------------------
@@ -77,3 +79,11 @@ Route::put('profile-update', [UserController::class,'updateProfile'])->middlewar
 // **************************** Support api **********
 Route::get('/supports', [SupportController::class, 'index']);
 Route::post('/supports', [SupportController::class, 'store']);
+
+// **************************** Buy api **********
+Route::get('/buys', [BuyController::class, 'index']);
+Route::post('/buys', [BuyController::class, 'store']);
+
+// **************************** Sell api **********
+Route::get('/sells', [SellController::class, 'index']);
+Route::post('/sells', [SellController::class, 'store']);
